@@ -60,6 +60,29 @@ module.exports.createGroup = (req, res, next) => {
     })
 };
 
+
+// module.exports.updateUserProgramm = (req, res, next) => {
+//   User.findByIdAndUpdate(req.params._id, {programm: req.body}, { new: true, runValidators: true })
+//     .then((user) => {
+//       if (user === null) {
+//         throw new NoDate_404(mesErrNoUser404);
+//       }
+//       res.send(user);
+//     })
+//     .catch((err) => {
+//       console.log(err.name);
+//       if (err.name === 'CastError') {
+//         next(new IncorrectData_400(mesErrIdUser400));
+//         return;
+//       };
+//       if (err.name === 'ValidationError') {
+//         next(new IncorrectData_400(mesErrValidationProgramm400));
+//         return;
+//       };
+//       next(err);
+//     });
+// };
+
 module.exports.deleteGroup = (req, res, next) => {
   Group.findById(req.params._id)
     .then((group) => {
