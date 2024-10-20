@@ -48,7 +48,6 @@ module.exports.getUserGroup = (req, res, next) => {
       user.education.map((item)=>
         groupsUser = [...groupsUser, String(item.group)]
       );
-      // console.log(groupsUser)
       Group.find({ _id: {$in : groupsUser}})
         .then((groups) => {
           // console.log(groups);
