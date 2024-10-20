@@ -94,13 +94,16 @@ module.exports.getUserGroup = (req, res, next) => {
 module.exports.patchUserProgramm = (req, res, next) => {
   const { thema, block, keyChange } = req.body;
   const { id } = req.params;
+
   User.findById(req.user._id)
     .then((user) => {
+      if (user === null) {
+        throw new NoDate_404(mesErrNoUser404);
+      }
       const groupIndex = user.education.findIndex((item)=> String(item.group) === id);
       if (groupIndex < 0) {
         throw new NoDate_404(mesErrNoGroup404);
       }
-
       const groupId = user.education.find((item)=> String(item.group) === id).group;
       const time = new Date().getTime();
       // const educationUser = user.education[groupIndex].programm;

@@ -14,7 +14,6 @@ router.get('/user/admin/users', getUsers);
 
 router.post('/user/admin/createUser', validationRouterCreateUserAdmin, createUser);
 
-// router.patch('/user/admin/:_id', validationRouterUpdateUserAdmin, updateUserProgramm);
 router.patch('/user/admin/addGroup/:_id', validationRouterAddGroupUserAdmin, addGroupUserAdmin);
 
 router.patch('/user/admin/deleteGroup/:_id', validationRouterDeleteGroupUserAdmin, deleteGroupUserAdmin);

@@ -5,7 +5,7 @@ const { validationRouterUpdateProgramm } = require('../validations/validationRou
 router.get('/user/me', getUserMe);
 router.get('/user/meData', getDataMe);
 router.get('/user/groups', getUserGroup);
-router.patch('/user/updateProgramm/:id', patchUserProgramm);
+router.patch('/user/updateProgramm/:id', validationRouterUpdateProgramm, patchUserProgramm);
 // router.patch('/user/updateProgramm/:id', validationRouterUpdateProgramm, patchUserProgramm);
 // router.patch('/user/updateProgramm/:id', patchUserProgramm);
 

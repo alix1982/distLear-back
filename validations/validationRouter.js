@@ -341,75 +341,12 @@ module.exports.validationRouterDeleteGroupUserAdmin = celebrate({
 
 module.exports.validationRouterUpdateProgramm = celebrate({
   params: Joi.object().keys({
-    id: Joi.string().min(1).max(1),
+    id: Joi.string().required().hex().length(24),
   }),
   body: Joi.object().keys({
-    programm: {
-      assigned: Joi.boolean().required(),
-      block1:{
-        thema1:{
-          timestart: Joi.number(),
-          timeend: Joi.number(),
-          passed: Joi.boolean(),
-        },
-        thema2:{
-          timestart: Joi.number(),
-          timeend: Joi.number(),
-          passed: Joi.boolean(),
-        },
-        thema3:{
-          timestart: Joi.number(),
-          timeend: Joi.number(),
-          passed: Joi.boolean(),
-        },
-        test:{
-          time:Joi.number(),
-          passed:Joi.boolean(),
-        }
-      },
-      block2:{
-        thema1:{
-          timestart: Joi.number(),
-          timeend: Joi.number(),
-          passed: Joi.boolean(),
-        },
-        thema2:{
-          timestart: Joi.number(),
-          timeend: Joi.number(),
-          passed: Joi.boolean(),
-        },
-        thema3:{
-          timestart: Joi.number(),
-          timeend: Joi.number(),
-          passed: Joi.boolean(),
-        },
-        test:{
-          time:Joi.number(),
-          passed:Joi.boolean(),
-        }
-      },
-      block3:{
-        thema1:{
-          timestart: Joi.number(),
-          timeend: Joi.number(),
-          passed: Joi.boolean(),
-        },
-        thema2:{
-          timestart: Joi.number(),
-          timeend: Joi.number(),
-          passed: Joi.boolean(),
-        },
-        thema3:{
-          timestart: Joi.number(),
-          timeend: Joi.number(),
-          passed: Joi.boolean(),
-        },
-        test:{
-          time:Joi.number(),
-          passed:Joi.boolean(),
-        }
-      }
-    },
+    thema: Joi.number().required().min(1).max(10),
+    block: Joi.number().required().min(1).max(10),
+    keyChange: Joi.string().required().min(1).max(10),
   }),
 });
 
@@ -430,8 +367,8 @@ module.exports.validationRouterDeleteProgramm = celebrate({
 module.exports.validationRouterCreateGroup = celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(50),
-    dateStart: Joi.date().timestamp('unix'),
-    dateEnd: Joi.date().timestamp('unix'),
+    dateStart: Joi.date().required().timestamp('unix'),
+    dateEnd: Joi.date().required().timestamp('unix'),
     programmName: Joi.string().required().min(2).max(50),
   }),
 });
