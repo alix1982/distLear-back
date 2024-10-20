@@ -14,11 +14,11 @@ module.exports = (req, res, next) => {
   let payload;
   try {
     payload = jwt.verify(token, JWT_SECRET_USER);
-    console.log('jwt');
+    // console.log('jwt');
   } catch (err) {
     try {
       payload = jwt.verify(token, JWT_SECRET_ADMIN);
-      console.log('jwt_admin');
+      // console.log('jwt_admin');
     } catch (err) {
       console.log(err);
       next(new NoAuthErr_401(mesErrAuth401));

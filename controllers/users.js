@@ -127,7 +127,7 @@ module.exports.patchUserProgramm = (req, res, next) => {
           { new: true, runValidators: true, arrayFilters: [ { "idGroup.group": { $eq: groupId } } ] }
         );
       } else if (keyChange === 'testBlock') {
-        console.log('testBlock');
+        // console.log('testBlock');
         educationUserBlocks[`block${block}`].test.passed = true;
         educationUserBlocks[`block${block}`].test.time = time;
 
@@ -136,7 +136,7 @@ module.exports.patchUserProgramm = (req, res, next) => {
           { new: true, runValidators: true, arrayFilters: [ { "idGroup.group": { $eq: groupId } } ] }
         );
       } else if (keyChange === 'testStart') {
-        console.log('testStart');
+        // console.log('testStart');
         // educationUser.startTest.passed = true;
         // educationUser.startTest.time = time;
 
@@ -144,6 +144,19 @@ module.exports.patchUserProgramm = (req, res, next) => {
           {$set: {
             "education.$[idGroup].programm.startTest.passed": true,
             "education.$[idGroup].programm.startTest.time": time,
+
+           }},
+          { new: true, runValidators: true, arrayFilters: [ { "idGroup.group": { $eq: groupId } } ] }
+        );
+      } else if (keyChange === 'testFinally') {
+        // console.log('testFinally');
+        // educationUser.startTest.passed = true;
+        // educationUser.startTest.time = time;
+
+        return user.updateOne(
+          {$set: {
+            "education.$[idGroup].programm.finallyTest.passed": true,
+            "education.$[idGroup].programm.finallyTest.time": time,
 
            }},
           { new: true, runValidators: true, arrayFilters: [ { "idGroup.group": { $eq: groupId } } ] }

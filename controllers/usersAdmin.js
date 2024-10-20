@@ -54,12 +54,14 @@ module.exports.createUser = (req, res, next) => {
       // bcrypt.hash(pas, 10)
       //   .then((hash) => User.create({
       //     snils: snils,
+      //     avatar: '',
       //     name: translit(userQuestionnaire.firstName),
       //     password: hash,
       //     education: []
       //   }))
         User.create({
           snils: snils,
+          avatar: '',
           name: translit(userQuestionnaire.firstName),
           password: Math.floor(Math.random() * 100000),
           isHash: false,
