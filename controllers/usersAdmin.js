@@ -110,7 +110,6 @@ module.exports.addGroupUserAdmin = (req, res, next) => {
                   throw new ConflictData_409(mesErrConflictUserGroup409);
                 }
               })
-              console.log(group)
               //
               // включение пользователя в группу
               User.findByIdAndUpdate(
