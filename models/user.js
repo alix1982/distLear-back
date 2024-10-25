@@ -21,7 +21,7 @@ const userSchema = new mongoose.Schema({
   },
   avatar: {
     type: String,
-    required: true,
+    // required: true,
     maxlength: 100,
   },
   snils: {
