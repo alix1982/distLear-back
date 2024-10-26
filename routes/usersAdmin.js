@@ -2,7 +2,6 @@ const router = require('express').Router();
 
 const {
   validationRouterCreateUserAdmin,
-  validationRouterUpdateUserAdmin,
   validationRouterDeleteUserAdmin,
   validationRouterAddGroupUserAdmin,
   validationRouterDeleteGroupUserAdmin

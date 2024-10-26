@@ -33,11 +33,11 @@ module.exports.patchQuestionnaireAdmin = (req, res, next) => {
   const {
     firstName, lastName, patronymic, workName, email, phone,
     postWork, postGoAndChs, yearPreviousQualification,
-    education, snils, citizenship
+    education, snils, citizenship, consentProcessingPersonalData,
   } = req.body;
   Questionnaire.findById(req.params._id)
     .then((questionnaire) => {
-      console.log(questionnaire);
+      // console.log(questionnaire);
       if (questionnaire === null) {
         throw new NoDate_404(mesErrNoQuestionnaire404);
       }
@@ -58,6 +58,7 @@ module.exports.patchQuestionnaireAdmin = (req, res, next) => {
           education: education,
           snils: snils,
           citizenship: citizenship,
+          consentProcessingPersonalData: consentProcessingPersonalData,
         }},
         { new: true, runValidators: true }
       );

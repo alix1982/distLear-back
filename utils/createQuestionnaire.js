@@ -7,7 +7,7 @@ const createQuestionnaire = (req, res, next) => {
   const {
     firstName, lastName, patronymic, workName, email, phone,
     postWork, postGoAndChs, yearPreviousQualification,
-    education, snils, citizenship
+    education, snils, citizenship, consentProcessingPersonalData
   } = req.body;
   Questionnaire.create({
     firstName,
@@ -23,6 +23,7 @@ const createQuestionnaire = (req, res, next) => {
     snils,
     citizenship,
     isModeration: false,
+    consentProcessingPersonalData,
   })
     .then((questionnaire) => {
       res.send({...questionnaire, message: mesQuestion});

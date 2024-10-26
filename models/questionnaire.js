@@ -76,7 +76,11 @@ const questionnaireSchema = new mongoose.Schema({
   isModeration: {
     type: Boolean,
     required: true,
-  }
+  },
+  consentProcessingPersonalData: {
+    type: Boolean,
+    required: true,
+  },
 });
 
 module.exports = mongoose.model('questionnaire', questionnaireSchema);

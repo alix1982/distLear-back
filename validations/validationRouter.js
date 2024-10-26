@@ -2,6 +2,7 @@ const { celebrate, Joi } = require('celebrate');
 const validator = require('validator');
 const { mesErrCelebratePhone400 } = require('../utils/messageServer');
 
+// валидация роута авторизации
 module.exports.validationRouterLogin = celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
@@ -10,6 +11,7 @@ module.exports.validationRouterLogin = celebrate({
   }),
 });
 
+// валидация роутов без авторизации
 module.exports.validationRouterCreateQuestionnaireUser = celebrate({
   body: Joi.object().keys({
     emailRequst: Joi.string().email().required(),
@@ -28,6 +30,7 @@ module.exports.validationRouterCreateQuestionnaireUser = celebrate({
     education: Joi.string().required().min(2).max(30),
     snils: Joi.string().required().min(11).max(11),
     citizenship: Joi.string().required().min(2).max(30),
+    consentProcessingPersonalData: Joi.boolean().required().default(false),
   }),
 });
 
@@ -44,6 +47,7 @@ module.exports.validationRouterQuestion = celebrate({
   }),
 });
 
+// валидация роутов анкет для администратора
 module.exports.validationRouterCreateQuestionnaireAdmin = celebrate({
   body: Joi.object().keys({
     firstName: Joi.string().required().min(2).max(30),
@@ -62,6 +66,7 @@ module.exports.validationRouterCreateQuestionnaireAdmin = celebrate({
     snils: Joi.string().required().min(11).max(11),
     citizenship: Joi.string().required().min(2).max(30),
     // isModeration: Joi.boolean().required().default(false),
+    consentProcessingPersonalData: Joi.boolean().required().default(false),
   }),
 });
 
@@ -82,6 +87,7 @@ module.exports.validationRouterFixQuestionnaireAdmin = celebrate({
     education: Joi.string().min(2).max(30),
     snils: Joi.string().min(11).max(11),
     citizenship: Joi.string().min(2).max(30),
+    consentProcessingPersonalData: Joi.boolean().required().default(false),
   }),
   params: Joi.object().keys({
     _id: Joi.string().required().hex().length(24),
@@ -103,215 +109,10 @@ module.exports.validationRouterDeleteQuestionnaireAdmin = celebrate({
   }),
 });
 
+// валидация роутов ...
 module.exports.validationRouterCreateUserAdmin = celebrate({
   body: Joi.object().keys({
     snils: Joi.string().min(11).max(11),
-  }),
-});
-
-module.exports.validationRouterUpdateUserAdmin = celebrate({
-  params: Joi.object().keys({
-    _id: Joi.string().required().hex().length(24),
-  }),
-  body: Joi.object().keys({
-    programm1: {
-      assigned: Joi.boolean().required(),
-      block1:{
-        thema1:{
-          timestart: Joi.number(),
-          timeend: Joi.number(),
-          passed: Joi.boolean(),
-        },
-        thema2:{
-          timestart: Joi.number(),
-          timeend: Joi.number(),
-          passed: Joi.boolean(),
-        },
-        thema3:{
-          timestart: Joi.number(),
-          timeend: Joi.number(),
-          passed: Joi.boolean(),
-        },
-        test:{
-          time:Joi.number(),
-          passed: Joi.boolean(),
-        },
-      },
-      block2:{
-        thema1:{
-          timestart: Joi.number(),
-          timeend: Joi.number(),
-          passed: Joi.boolean(),
-        },
-        thema2:{
-          timestart: Joi.number(),
-          timeend: Joi.number(),
-          passed: Joi.boolean(),
-        },
-        thema3:{
-          timestart: Joi.number(),
-          timeend: Joi.number(),
-          passed: Joi.boolean(),
-        },
-        test:{
-          time:Joi.number(),
-          passed: Joi.boolean(),
-        },
-      },
-      block3:{
-        thema1:{
-          timestart: Joi.number(),
-          timeend: Joi.number(),
-          passed: Joi.boolean(),
-        },
-        thema2:{
-          timestart: Joi.number(),
-          timeend: Joi.number(),
-          passed: Joi.boolean(),
-        },
-        thema3:{
-          timestart: Joi.number(),
-          timeend: Joi.number(),
-          passed: Joi.boolean(),
-        },
-        test:{
-          time:Joi.number(),
-          passed: Joi.boolean(),
-        },
-      }
-    },
-    programm2: {
-      assigned: Joi.boolean().required(),
-      block1:{
-        thema1:{
-          timestart: Joi.number(),
-          timeend: Joi.number(),
-          passed: Joi.boolean(),
-        },
-        thema2:{
-          timestart: Joi.number(),
-          timeend: Joi.number(),
-          passed: Joi.boolean(),
-        },
-        thema3:{
-          timestart: Joi.number(),
-          timeend: Joi.number(),
-          passed: Joi.boolean(),
-        },
-        test:{
-          time:Joi.number(),
-          passed: Joi.boolean(),
-        },
-      },
-      block2:{
-        thema1:{
-          timestart: Joi.number(),
-          timeend: Joi.number(),
-          passed: Joi.boolean(),
-        },
-        thema2:{
-          timestart: Joi.number(),
-          timeend: Joi.number(),
-          passed: Joi.boolean(),
-        },
-        thema3:{
-          timestart: Joi.number(),
-          timeend: Joi.number(),
-          passed: Joi.boolean(),
-        },
-        test:{
-          time:Joi.number(),
-          passed: Joi.boolean(),
-        },
-      },
-      block3:{
-        thema1:{
-          timestart: Joi.number(),
-          timeend: Joi.number(),
-          passed: Joi.boolean(),
-        },
-        thema2:{
-          timestart: Joi.number(),
-          timeend: Joi.number(),
-          passed: Joi.boolean(),
-        },
-        thema3:{
-          timestart: Joi.number(),
-          timeend: Joi.number(),
-          passed: Joi.boolean(),
-        },
-        test:{
-          time:Joi.number(),
-          passed: Joi.boolean(),
-        },
-      }
-    },
-    programm3: {
-      assigned: Joi.boolean().required(),
-      block1:{
-        thema1:{
-          timestart: Joi.number(),
-          timeend: Joi.number(),
-          passed: Joi.boolean(),
-        },
-        thema2:{
-          timestart: Joi.number(),
-          timeend: Joi.number(),
-          passed: Joi.boolean(),
-        },
-        thema3:{
-          timestart: Joi.number(),
-          timeend: Joi.number(),
-          passed: Joi.boolean(),
-        },
-        test:{
-          time:Joi.number(),
-          passed: Joi.boolean(),
-        },
-      },
-      block2:{
-        thema1:{
-          timestart: Joi.number(),
-          timeend: Joi.number(),
-          passed: Joi.boolean(),
-        },
-        thema2:{
-          timestart: Joi.number(),
-          timeend: Joi.number(),
-          passed: Joi.boolean(),
-        },
-        thema3:{
-          timestart: Joi.number(),
-          timeend: Joi.number(),
-          passed: Joi.boolean(),
-        },
-        test:{
-          time:Joi.number(),
-          passed: Joi.boolean(),
-        },
-      },
-      block3:{
-        thema1:{
-          timestart: Joi.number(),
-          timeend: Joi.number(),
-          passed: Joi.boolean(),
-        },
-        thema2:{
-          timestart: Joi.number(),
-          timeend: Joi.number(),
-          passed: Joi.boolean(),
-        },
-        thema3:{
-          timestart: Joi.number(),
-          timeend: Joi.number(),
-          passed: Joi.boolean(),
-        },
-        test:{
-          time:Joi.number(),
-          passed: Joi.boolean(),
-        },
-      }
-    },
   }),
 });
 
@@ -321,6 +122,7 @@ module.exports.validationRouterDeleteUserAdmin = celebrate({
   }),
 });
 
+// валидация роутов ...
 module.exports.validationRouterAddGroupUserAdmin = celebrate({
   body: Joi.object().keys({
     groupName: Joi.string().min(2).max(50).required(),
@@ -339,6 +141,7 @@ module.exports.validationRouterDeleteGroupUserAdmin = celebrate({
   }),
 });
 
+// валидация роутов ...
 module.exports.validationRouterUpdateProgramm = celebrate({
   params: Joi.object().keys({
     id: Joi.string().required().hex().length(24),
@@ -364,6 +167,7 @@ module.exports.validationRouterDeleteProgramm = celebrate({
   }),
 });
 
+// валидация роутов ...
 module.exports.validationRouterCreateGroup = celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(50),
