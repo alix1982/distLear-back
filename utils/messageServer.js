@@ -1,71 +1,68 @@
 module.exports = {
-  // mesErrDeleteMovie403: 'Удаление не своей карточки',
-
-  // общие ошибки сервера
+  // общие сообщения ошибок сервера
   mesErr500: 'На сервере произошла ошибка',
   mesErrRouterErrors404: 'Не верный путь',
 
-  //валидация роута анкет
+  // сообщения celebrate
   mesErrCelebratePhone400: 'Телефон не корректен',
-  mesErrNoEmailSending400: 'Нет почты для отправки анкеты',
-  mesErrConflictQuestionnaire409: 'Анкета с таким снилсом уже существует',
-  mesErrValidationQuestionnaire400: 'Ошибка валидации модели анкеты',
 
-  // валидация роута анкет админа
-  mesErrIdQuestionnaire400: 'Некорректный id анкеты',
-  mesErrNoQuestionnaire404: 'Анкета не найдена',
-  mesFixQuestionnaire: 'Анкета изменена',
-  mesModerationQuestionnaireCompleted: 'Модерация анкеты пройдена',
-  mesModerationQuestionnaireCancelled: 'Модерация анкеты отменена',
+  //сообщения мидлвар (авторизации)
+  mesErrAuth401: 'Необходима авторизация',
 
-  //валидация роута авторизации
+  //сообщения роута авторизации
   mesErrLogin401: 'Пользователь с таким логином и паролем не найден',
   mesErrLoginSnils401: 'Неправильный снилс',
   mesLoginUser: 'Всё верно!',
   mesLoginAdmin: 'That right!',
 
-  //валидация авторизации
-  mesErrAuth401: 'Необходима авторизация',
+  // сообщения роута noAutorization и утилит
+  mesErrNoEmailSending400: 'Нет почты для отправки анкеты',
+  mesQuestion: 'Письмо отправлено', // + в утилитах
 
-  //валидация роута пользователей админа
-  mesErrNoUser404: 'Пользователь не найден',
-  mesErrValidationUser400: 'Ошибка валидации модели пользователя',
-  mesErrConflictUser409: 'Пользователь с таким снилсом уже существует',
-  mesErrConflictUserGroup409: 'Группа с таким именем уже назначена пользователю',
-  mesErrIdUser400: 'Некорректный id пользователя',
-  mesErrDeleteUser406: 'Ошибка! Удаление пользователя включенного в группы',
+  // сообщения роута анкет админа и утилит
+  mesErrValidationQuestionnaire400: 'Ошибка валидации модели анкеты', // + в утилитах
+  mesErrConflictQuestionnaire409: 'Анкета с таким снилсом уже существует', // + в утилитах
+  mesErrIdQuestionnaire400: 'Некорректный id анкеты',
+  mesFixQuestionnaire: 'Анкета изменена',
+  mesModerationQuestionnaireCompleted: 'Модерация анкеты пройдена',
+  mesModerationQuestionnaireCancelled: 'Модерация анкеты отменена',
 
-  //отправка письма с вопросом
-  mesQuestion: 'Письмо отправлено',
-
-  //валидация роута пользователя
-  mesErrIdUser400: 'Некорректный id пользователя',
+  //сообщения роута пользователя
   mesAddProgrammUserCompleted: 'Программы успешно добавлены',
-  mesErrValidationUser400: 'Ошибка валидации модели пользователя',
-  mesAddProgrammUserCancelled: 'При добавлении программ произошла ошибка',
+  mesErrFixUpdateProgrammUser: 'Ошибка измения программы пользователя',
+  mesErrNoKeyFixProgrammUser400: 'Неизвестный ключ изменения программ пользователя',
+  mesErrNoDataFixProgrammUser400: 'Некорректные данные для изменения программ пользователя',
 
+  //сообщения роута пользователей админа
+  mesErrConflictUserGroup409: 'Группа с таким именем уже назначена пользователю',
+  mesErrDeleteUser406: 'Ошибка! Удаление пользователя включенного в группы',
+  mesErrUserEducationPast400: 'Удаление группы проходящей(закончившей) обучение',
 
-  //валидация роута пользователя (программы)
-  mesErrIdProgramm400: 'Некорректный id программы',
-
-  //валидация роута программ
-  mesErrIdProgramm400: 'Некорректный id программы',
-  mesErrValidationProgramm400: 'Ошибка валидации модели программ',
-  mesErrNoProgramm404: 'Программа не найдена',
+  //сообщения роута программ
   mesErrCreateProgramm406: 'Ошибка! Длина массива тем не соответствует количеству блоков',
   mesErrDeleteProgramm406: 'Ошибка! Удаление используемой программы',
-  mesErrConflictProgramm409: 'Программа с таким именем уже существует',
 
-  //валидация роута групп
-  mesErrUserEducationPast400: 'Удаление группы проходящей(закончившей) обучение',
-  mesErrIdGroup400: 'Некорректный id группы',
-  mesErrValidationGroup400: 'Ошибка валидации модели групп',
-  mesErrNoGroup404: 'Группы не найдены',
+  //сообщения роута групп
   mesErrDeleteGroup406: 'Ошибка! Удаление используемой группы',
   mesErrConflictGroup409: 'Группа с таким именем уже существует',
 
+  //сообщения роута пользователя и роута пользователей админа
+  mesErrNoUser404: 'Пользователь не найден',
+  mesErrValidationUser400: 'Ошибка валидации модели пользователя',
+  mesErrIdUser400: 'Некорректный id пользователя',
 
-  // mesErrValidationUser400: 'Ошибка валидации модели пользователя',
-  // mesAddProgrammUserCompleted: 'Программы успешно добавлены',
-  // mesAddProgrammUserCancelled: 'При добавлении программ произошла ошибка',
+  // сообщения в роутах пользователей админа и групп
+  mesErrIdGroup400: 'Некорректный id группы',
+  mesErrValidationGroup400: 'Ошибка валидации модели групп',
+
+  //сообщения роута групп, программ и пользователя админа
+  mesErrIdProgramm400: 'Некорректный id программы',
+  mesErrValidationProgramm400: 'Ошибка валидации модели программ',
+  mesErrNoProgramm404: 'Программа не найдена',
+
+  // сообщения в разных роутах
+  mesErrNoQuestionnaire404: 'Анкета не найдена', // в роутах анкет админа, пользователя админа и пользователя
+  mesErrConflictUser409: 'Пользователь с таким снилсом уже существует', // в роутах пользователей админа и авторизации
+  mesErrNoGroup404: 'Группы не найдены', // в роутах пользователей, пользователей админа и групп
+  mesErrConflictProgramm409: 'Программа с таким именем уже существует', // в роутах программ и групп
 };

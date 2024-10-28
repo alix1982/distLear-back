@@ -87,7 +87,6 @@ module.exports.validationRouterFixQuestionnaireAdmin = celebrate({
     education: Joi.string().min(2).max(30),
     snils: Joi.string().min(11).max(11),
     citizenship: Joi.string().min(2).max(30),
-    consentProcessingPersonalData: Joi.boolean().required().default(false),
   }),
   params: Joi.object().keys({
     _id: Joi.string().required().hex().length(24),
@@ -109,20 +108,13 @@ module.exports.validationRouterDeleteQuestionnaireAdmin = celebrate({
   }),
 });
 
-// валидация роутов ...
+// валидация роутов пользователей для администратора
 module.exports.validationRouterCreateUserAdmin = celebrate({
   body: Joi.object().keys({
-    snils: Joi.string().min(11).max(11),
+    snils: Joi.string().required().min(11).max(11),
   }),
 });
 
-module.exports.validationRouterDeleteUserAdmin = celebrate({
-  params: Joi.object().keys({
-    _id: Joi.string().required().hex().length(24),
-  }),
-});
-
-// валидация роутов ...
 module.exports.validationRouterAddGroupUserAdmin = celebrate({
   body: Joi.object().keys({
     groupName: Joi.string().min(2).max(50).required(),
@@ -141,23 +133,31 @@ module.exports.validationRouterDeleteGroupUserAdmin = celebrate({
   }),
 });
 
-// валидация роутов ...
+module.exports.validationRouterDeleteUserAdmin = celebrate({
+  params: Joi.object().keys({
+    _id: Joi.string().required().hex().length(24),
+  }),
+});
+
+// валидация роутов пользователей
 module.exports.validationRouterUpdateProgramm = celebrate({
   params: Joi.object().keys({
     id: Joi.string().required().hex().length(24),
   }),
   body: Joi.object().keys({
-    thema: Joi.number().required().min(1).max(10),
-    block: Joi.number().required().min(1).max(10),
+    thema: Joi.number().required().min(0).max(10),
+    block: Joi.number().required().min(0).max(10),
     keyChange: Joi.string().required().min(1).max(10),
   }),
 });
 
+
+// валидация роутов программ для администратора
 module.exports.validationRouterCreateProgramm = celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(50),
     blockCount: Joi.number().required().min(1).max(10),
-    themaCount: Joi.array().items(Joi.number()).required(),
+    themaCount: Joi.array().items(Joi.number().min(1).max(10)).required(),
   }),
 });
 
@@ -167,7 +167,7 @@ module.exports.validationRouterDeleteProgramm = celebrate({
   }),
 });
 
-// валидация роутов ...
+// валидация роутов групп для администратора
 module.exports.validationRouterCreateGroup = celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(50),

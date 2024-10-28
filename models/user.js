@@ -38,7 +38,6 @@ const userSchema = new mongoose.Schema({
     },
     programm: {
       type: Object,
-      // assigned:{ type: Boolean, required: true },
       block:{
         thema:{
           timestart:{type: Number, required: true},
@@ -52,25 +51,6 @@ const userSchema = new mongoose.Schema({
       }
     }
   }]
-  // programm: {
-  //    assigned:{
-  //      type: Boolean,
-  //      required: true,
-  //    },
-  //    block1:{
-  //      thema1:{
-  //        timestart:{type: Number,},
-  //        timeend:{type: Number,},
-  //        passed:{type: Boolean}
-  //      },
-  //      ...
-  //      test:{
-  //        time:{type: Number,},
-  //        passed:{type: Boolean}
-  //      }
-  //    },
-  //    ...
-  // }
 });
 
 module.exports = mongoose.model('user', userSchema);

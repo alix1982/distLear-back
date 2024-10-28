@@ -3,7 +3,17 @@ const NoDate_404 = require('../errors/404-noDate');
 const Group = require('../models/group');
 const Questionnaire = require('../models/questionnaire');
 const User = require('../models/user');
-const { mesErrNoUser404, mesErrNoQuestionnaire404, mesAddProgrammUserCompleted, mesAddProgrammUserCancelled, mesErrIdUser400, mesErrValidationUser400, mesErrIdProgramm400, mesErrNoGroup404 } = require('../utils/messageServer');
+const {
+  mesErrNoUser404,
+  mesErrNoQuestionnaire404,
+  mesAddProgrammUserCompleted,
+  mesErrIdUser400,
+  mesErrValidationUser400,
+  mesErrNoGroup404,
+  mesErrNoKeyFixProgrammUser400,
+  mesErrNoDataFixProgrammUser400,
+  mesErrFixUpdateProgrammUser
+} = require('../utils/messageServer');
 
 module.exports.getUserMe = (req, res, next) => {
   User.findById(req.user._id)
@@ -18,6 +28,7 @@ module.exports.getUserMe = (req, res, next) => {
 
 module.exports.getDataMe = (req, res, next) => {
   let userData = {};
+  // поиск пользователя по id
   User.findById(req.user._id)
     .then((user) => {
       if (user === null) {
@@ -26,12 +37,14 @@ module.exports.getDataMe = (req, res, next) => {
       return user;
     })
     .then((user)=> {
+      // поиск анкеты пользователя
       Questionnaire.find( { snils: user.snils } )
         .then((questionnaire)=> {
           if (questionnaire === null) {
             throw new NoDate_404(mesErrNoQuestionnaire404);
           }
           userData = {user: user, questionnaire: questionnaire[0]}
+          // вывод данных пользователя и его анкеты
           res.send(userData);
         })
     })
@@ -44,17 +57,14 @@ module.exports.getUserGroup = (req, res, next) => {
       if (user === null) {
         throw new NoDate_404(mesErrNoUser404);
       }
+      // формирование массива с id групп пользователя
       let groupsUser = [];
       user.education.map((item)=>
         groupsUser = [...groupsUser, String(item.group)]
       );
+      // поиск групп по массиву id групп пользователя
       Group.find({ _id: {$in : groupsUser}})
         .then((groups) => {
-          // console.log(groups);
-          // проверить ошибку
-          if (groups === null) {
-            throw new NoDate_404(mesErrNoGroup404);
-          }
           res.send(groups);
         })
         .catch((err) => {
@@ -95,25 +105,31 @@ module.exports.patchUserProgramm = (req, res, next) => {
   const { thema, block, keyChange } = req.body;
   const { id } = req.params;
 
+  // поиск пользователя по id
   User.findById(req.user._id)
     .then((user) => {
       if (user === null) {
         throw new NoDate_404(mesErrNoUser404);
       }
+      // поиск индекса группы в массиве групп пользователя
       const groupIndex = user.education.findIndex((item)=> String(item.group) === id);
       if (groupIndex < 0) {
         throw new NoDate_404(mesErrNoGroup404);
       }
+      // поиск id группы пользователя в списке групп пользователя
       const groupId = user.education.find((item)=> String(item.group) === id).group;
       const time = new Date().getTime();
       // const educationUser = user.education[groupIndex].programm;
+      // получение обьекта блоков обучения нужной программы пользователя
       const educationUserBlocks = user.education[groupIndex].programm.blocks;
 
-      // if (user === null) {
-      //   throw new NoDate_404(mesErrNoUser404);
-      // }
+      // начало темы пользователем
       if (keyChange === 'start') {
-        educationUserBlocks[`block${block}`][`thema${thema}`].timestart = time
+        try {
+          educationUserBlocks[`block${block}`][`thema${thema}`].timestart = time
+        } catch (error) {
+          throw new IncorrectData_400(mesErrNoDataFixProgrammUser400);
+        }
 
         return user.updateOne(
           {$set: { "education.$[idGroup].programm.blocks": educationUserBlocks }},
@@ -121,27 +137,34 @@ module.exports.patchUserProgramm = (req, res, next) => {
         );
 
       } else if (keyChange === 'end') {
-        educationUserBlocks[`block${block}`][`thema${thema}`].timeend = time;
-        educationUserBlocks[`block${block}`][`thema${thema}`].passed = true;
+        // окончание темы пользователем
+        try {
+          educationUserBlocks[`block${block}`][`thema${thema}`].timeend = time;
+          educationUserBlocks[`block${block}`][`thema${thema}`].passed = true;
+        } catch (error) {
+          throw new IncorrectData_400(mesErrNoDataFixProgrammUser400);
+        }
 
         return user.updateOne(
           {$set: { "education.$[idGroup].programm.blocks": educationUserBlocks }},
           { new: true, runValidators: true, arrayFilters: [ { "idGroup.group": { $eq: groupId } } ] }
         );
       } else if (keyChange === 'testBlock') {
-        // console.log('testBlock');
-        educationUserBlocks[`block${block}`].test.passed = true;
-        educationUserBlocks[`block${block}`].test.time = time;
+        // успешное прохождение промежуточного теста (в блоке)
+
+        try {
+          educationUserBlocks[`block${block}`].test.passed = true;
+          educationUserBlocks[`block${block}`].test.time = time;
+        } catch (error) {
+          throw new IncorrectData_400(mesErrNoDataFixProgrammUser400);
+        }
 
         return user.updateOne(
           {$set: { "education.$[idGroup].programm.blocks": educationUserBlocks }},
           { new: true, runValidators: true, arrayFilters: [ { "idGroup.group": { $eq: groupId } } ] }
         );
       } else if (keyChange === 'testStart') {
-        // console.log('testStart');
-        // educationUser.startTest.passed = true;
-        // educationUser.startTest.time = time;
-
+        // прохождение входного теста
         return user.updateOne(
           {$set: {
             "education.$[idGroup].programm.startTest.passed": true,
@@ -151,10 +174,7 @@ module.exports.patchUserProgramm = (req, res, next) => {
           { new: true, runValidators: true, arrayFilters: [ { "idGroup.group": { $eq: groupId } } ] }
         );
       } else if (keyChange === 'testFinally') {
-        // console.log('testFinally');
-        // educationUser.startTest.passed = true;
-        // educationUser.startTest.time = time;
-
+        // успешное прохождение финального теста
         return user.updateOne(
           {$set: {
             "education.$[idGroup].programm.finallyTest.passed": true,
@@ -164,22 +184,28 @@ module.exports.patchUserProgramm = (req, res, next) => {
           { new: true, runValidators: true, arrayFilters: [ { "idGroup.group": { $eq: groupId } } ] }
         );
       } else {
-        // if (user === null) {
-        //   throw new NoDate_404(mesErrNoUser404);
-        // }
+        throw new IncorrectData_400(mesErrNoKeyFixProgrammUser400);
       }
     })
     .then((userNew) => {
       if (userNew.acknowledged === true) {
+        // формирование ответа при положительном прохождении запроса
         User.findById(req.user._id)
           .then((user)=>{
+            if (user === null) {
+              throw new NoDate_404(mesErrNoUser404);
+            }
             const groupIndex = user.education.findIndex((item)=> String(item.group) === id)
             return res.send({
               message: mesAddProgrammUserCompleted, userGroup: user.education[groupIndex]
             })
         })
       } else {
-        return res.send(userNew)
+        // формирование ответа при отрицательном прохождении запроса
+        return res.send({
+          userNew: userNew,
+          message: mesErrFixUpdateProgrammUser,
+        })
       }
     })
     .catch((err) => {
@@ -189,7 +215,7 @@ module.exports.patchUserProgramm = (req, res, next) => {
         return;
       }
       if (err.name === 'TypeError') {
-        next(new NoDate_404(mesErrNoGroup404));
+        next(new NoDate_404(mesErrFixUpdateProgrammUser));
         return;
       };
       if (err.name === 'ValidationError') {

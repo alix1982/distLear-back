@@ -1,11 +1,9 @@
 const Questionnaire = require('../models/questionnaire');
-// const sendEmail = require('../utils/sendEmail');
 const IncorrectData_400 = require('../errors/400-incorrectData');
 const NoDate_404 = require('../errors/404-noDate');
 const ConflictData_409 = require('../errors/409-conflictData');
-// const ForbiddenData_403 = require('../errors/403-forbiddenData');
+
 const {
-  // mesErrDeleteMovie403,
   mesErrNoQuestionnaire404,
   mesErrIdQuestionnaire400,
   mesErrConflictQuestionnaire409,
@@ -33,17 +31,13 @@ module.exports.patchQuestionnaireAdmin = (req, res, next) => {
   const {
     firstName, lastName, patronymic, workName, email, phone,
     postWork, postGoAndChs, yearPreviousQualification,
-    education, snils, citizenship, consentProcessingPersonalData,
+    education, snils, citizenship
   } = req.body;
   Questionnaire.findById(req.params._id)
     .then((questionnaire) => {
-      // console.log(questionnaire);
       if (questionnaire === null) {
         throw new NoDate_404(mesErrNoQuestionnaire404);
       }
-      // if (req._id !== questionnaire.owner.toString()) {
-      //   throw new ForbiddenData_403(mesErrDeleteMovie403);
-      // }
       return questionnaire.updateOne(
         {$set: {
           firstName: firstName,
@@ -58,12 +52,12 @@ module.exports.patchQuestionnaireAdmin = (req, res, next) => {
           education: education,
           snils: snils,
           citizenship: citizenship,
-          consentProcessingPersonalData: consentProcessingPersonalData,
         }},
         { new: true, runValidators: true }
       );
     })
     .then((questionnaire) => {
+      // формирование ответа при успешном (или неудачном) изменении анкеты
       if (questionnaire.acknowledged === true) {
         return res.send({ message: mesFixQuestionnaire })
       } else {
@@ -93,9 +87,11 @@ module.exports.patchQuestionnaireAdminModeration = (req, res, next) => {
       if (questionnaire === null) {
         throw new NoDate_404(mesErrNoQuestionnaire404);
       }
+      // изменение статуса модерации анкеты
       return questionnaire.updateOne({$set: { isModeration: isModeration }}, { new: true, runValidators: true });
     })
     .then((questionnaire) => {
+      // формирование ответа при успешном (или неудачном) изменения статуса модерации анкеты
       if (questionnaire.acknowledged === true) {
         return res.send(
           isModeration ?
@@ -120,7 +116,6 @@ module.exports.patchQuestionnaireAdminModeration = (req, res, next) => {
 };
 
 module.exports.deleteQuestionnaireAdmin = (req, res, next) => {
-  // console.log(req.params._id);
   Questionnaire.findById(req.params._id)
     .then((questionnaire) => {
       if (questionnaire === null) {

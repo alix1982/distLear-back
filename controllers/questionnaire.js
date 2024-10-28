@@ -12,9 +12,9 @@ module.exports.createQuestionnaireUser = async (req, res, next) => {
       emailRequst,
       firstName, lastName, patronymic, workName, email, phone,
       postWork, postGoAndChs, yearPreviousQualification,
-      education, snils, citizenship,
+      education, snils, citizenship, consentProcessingPersonalData
     } = req.body;
-
+    console.log(consentProcessingPersonalData)
     // if (!emailRequst) {
     //   return res.status(400).json({ message: 'Email is required.' });
     // }
@@ -36,6 +36,7 @@ module.exports.createQuestionnaireUser = async (req, res, next) => {
         <p>Образование: ${education}</p>
         <p>СНИЛС: ${snils}</p>
         <p>Гражданство: ${citizenship}</p>
+        <p>Согласие на обработку персональных данных: ${consentProcessingPersonalData ? 'Есть' : 'Нет'}</p>
         `,
     };
 
@@ -66,9 +67,6 @@ module.exports.createQuestion = async (req, res, next) => {
   try {
     const { emailRequst, name, phone, email, question } = req.body;
 
-    // if (!emailRequst) {
-    //   return res.status(400).json({ message: 'Email is required.' });
-    // }
     // готовим данные для отправки на почту
     const options = {
       to: emailRequst,

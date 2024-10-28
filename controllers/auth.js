@@ -35,12 +35,6 @@ module.exports.login = (req, res, next) => {
       })
       .catch(next);
   }
-  // if (name === NAME_ADMIN && password === PASSWORD_ADMIN) {
-  //   const token = jwt.sign({ name: NAME_ADMIN }, JWT_SECRET_ADMIN, { expiresIn: '7d' });
-  //   return res.send({ token, message: mesLoginAdmin });
-  // }
-
-
 };
 
 module.exports.createPasswordAdmin = (req, res, next) => {

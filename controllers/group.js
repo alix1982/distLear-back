@@ -18,6 +18,7 @@ const {
 } = require('../utils/messageServer');
 
 module.exports.getGroups = (req, res, next) => {
+  // поиск групп
   Group.find({})
     .then((groups) => {
       if (groups.length === 0) {
@@ -32,8 +33,12 @@ module.exports.createGroup = (req, res, next) => {
 
   const { name, dateStart, dateEnd, programmName } = req.body;
 
+  // изменение статуса использования программы
   Programm.findOneAndUpdate({name: programmName}, {applies: true}, { new: true, runValidators: true })
     .then((prog)=>{
+      if (prog === null) {
+        throw new NoDate_404(mesErrNoProgramm404);
+      }
       Group.create({
       name,
       assigned: false,
@@ -66,12 +71,11 @@ module.exports.deleteGroup = (req, res, next) => {
       if (group === null) {
         throw new NoDate_404(mesErrNoGroup404);
       }
+      // запрет удаления группы назначенной пользователям
       if (group.assigned) {
         throw new NotAcceptable_406(mesErrDeleteGroup406);
       }
-
       return group.remove();
-      // return group
     })
     .then((group) => {
       Group.find({})
@@ -79,8 +83,8 @@ module.exports.deleteGroup = (req, res, next) => {
           if (groups.length === 0) {
             throw new NoDate_404(mesErrNoGroup404);
           }
+          // формирование массива групп в которых используется такая же программа
           let groupsProgramm = [];
-          // console.log(group.programm)
           groups.map((groupProgramm) =>
             (String(groupProgramm.programm) === String(group.programm)) && (groupsProgramm = [...groupsProgramm, groupProgramm])
           );
@@ -88,6 +92,9 @@ module.exports.deleteGroup = (req, res, next) => {
             // изменение статуса applies у программы если она никому не назначена
             Programm.findByIdAndUpdate(group.programm, {applies: false}, { new: true, runValidators: true })
               .then((programm)=>{
+                if (programm === null) {
+                  throw new NoDate_404(mesErrNoProgramm404);
+                }
                 res.send(group);
               })
               .catch((err) => {

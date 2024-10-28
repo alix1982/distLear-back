@@ -22,7 +22,8 @@ const {
   mesErrValidationGroup400,
   mesErrIdGroup400,
   mesErrUserEducationPast400,
-  mesErrDeleteUser406
+  mesErrDeleteUser406,
+  mesErrNoProgramm404
 } = require('../utils/messageServer');
 
 module.exports.getUsers = (req, res, next) => {
@@ -40,15 +41,18 @@ module.exports.createUser = (req, res, next) => {
   const { snils } = req.body;
   let userQuestionnaire = {};
 
+  // поиск анкеты по снилсу
   Questionnaire.find( { snils: snils } )
     .then((questionnaire)=> {
       if (questionnaire === null) {
         throw new NoDate_404(mesErrNoQuestionnaire404);
       }
+      // найденная анкета пользователя
       userQuestionnaire = questionnaire[0];
       return userQuestionnaire;
     })
     .then((userQuestionnaire)=>{
+      // вариант с шифрованием пароля пользователя
       // const pas = String(Math.floor(Math.random() * 100000));
 
       // bcrypt.hash(pas, 10)
@@ -59,6 +63,7 @@ module.exports.createUser = (req, res, next) => {
       //     password: hash,
       //     education: []
       //   }))
+      // создание пользователя с открытым паролем
         User.create({
           snils: snils,
           avatar: '',
@@ -95,10 +100,18 @@ module.exports.createUser = (req, res, next) => {
 module.exports.addGroupUserAdmin = (req, res, next) => {
   const { groupName } = req.body;
 
+  // изменение статуса использования программы при добавлении ее пользователю
   Group.findOneAndUpdate({name: groupName}, {assigned: true}, { new: true, runValidators: true })
     .then((group)=> {
+      if (group === null) {
+        throw new NoDate_404(mesErrNoGroup404);
+      }
+      // поиск программы по id программы из добавляемой группы
       Programm.findById(group.programm)
         .then((programm) => {
+          if (programm === null) {
+            throw new NoDate_404(mesErrNoProgramm404);
+          }
           User.findById(req.params._id)
             .then((user) => {
               if (user === null) {
@@ -117,7 +130,12 @@ module.exports.addGroupUserAdmin = (req, res, next) => {
                 {education: [...user.education, {group, programm: programm}]},
                 { new: true, runValidators: true }
               )
-                .then((user) => {res.send(user);})
+                .then((user) => {
+                  if (user === null) {
+                    throw new NoDate_404(mesErrNoUser404);
+                  }
+                  res.send(user);
+                })
                 .catch((err) => {
                   console.log(err.name);
                   if (err.name === 'CastError') {
@@ -185,10 +203,12 @@ module.exports.deleteGroupUserAdmin = (req, res, next) => {
       if (user === null) {
         throw new NoDate_404(mesErrNoUser404);
       }
-
       //поиск группы для сравнения с группами пользователя
       Group.findById(groupId)
         .then((group)=>{
+          if (group === null) {
+            throw new NoDate_404(mesErrNoGroup404);
+          }
           // поиск индекса группы в списке групп пользователя
           const groupDelNumber = user.education.findIndex((item)=>String(item.group) === String(groupId));
           // если группа не найдена
@@ -206,9 +226,15 @@ module.exports.deleteGroupUserAdmin = (req, res, next) => {
           // удаление группы из списка групп пользователя
           User.findByIdAndUpdate(req.params._id, {education: education}, { new: true, runValidators: true })
             .then((userUpdate) => {
+              if (user === null) {
+                throw new NoDate_404(mesErrNoUser404);
+              }
               // поиск всех пользователей для проверки наличия группы у всех пользователей и если ее нет смены статуса assigned у группы
               User.find({})
                 .then((users)=>{
+                  if (users.length === 0) {
+                    throw new NoDate_404(mesErrNoUser404);
+                  }
                   let usersGroup = [];
                   users.map((user) =>
                       user.education.map((item)=>
@@ -219,6 +245,9 @@ module.exports.deleteGroupUserAdmin = (req, res, next) => {
                     // изменение статуса assigned у группы если она никому не назначена
                     Group.findByIdAndUpdate(groupId, {assigned: false}, { new: true, runValidators: true })
                       .then((group)=>{
+                        if (group === null) {
+                          throw new NoDate_404(mesErrNoGroup404);
+                        }
                         res.send(userUpdate);
                       })
                       .catch((err) => {
@@ -313,18 +342,15 @@ module.exports.deleteGroupUserAdmin = (req, res, next) => {
 };
 
 module.exports.deleteUserAdmin = (req, res, next) => {
-  // console.log(req.params._id);
   User.findById(req.params._id)
     .then((user) => {
       if (user === null) {
         throw new NoDate_404(mesErrNoUser404);
       }
+      // запрет удаления пользователя с назначенным обучением
       if (user.education.length > 0) {
         throw new NotAcceptable_406(mesErrDeleteUser406);
       }
-      // if (req._id !== questionnaire.owner.toString()) {
-      //   throw new ConflictData_409(mesErrDeleteMovie403);
-      // }
       return user.remove();
     })
     .then((user) => res.send(user))

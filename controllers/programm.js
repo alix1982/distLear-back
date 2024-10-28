@@ -35,6 +35,7 @@ module.exports.createProgramm = (req, res, next) => {
 
   const { name, blockCount, themaCount } = req.body;
 
+  // проверка длины массива themaCount на равенство количеству блокв
   if (blockCount !== themaCount.length) {
     next(new NotAcceptable_406(mesErrCreateProgramm406));
     return;
@@ -102,10 +103,6 @@ module.exports.deleteProgramm = (req, res, next) => {
       if (programm.applies) {
         throw new NotAcceptable_406(mesErrDeleteProgramm406);
       }
-
-      // if (req._id !== questionnaire.owner.toString()) {
-      //   throw new ConflictData_409(mesErrDeleteMovie403);
-      // }
       return programm.remove();
     })
     .then((programm) => res.send(programm))
