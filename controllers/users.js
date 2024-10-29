@@ -1,6 +1,6 @@
 const IncorrectData_400 = require('../errors/400-incorrectData');
 const NoDate_404 = require('../errors/404-noDate');
-// const Group = require('../models/group');
+const Group = require('../models/group');
 const Questionnaire = require('../models/questionnaire');
 const User = require('../models/user');
 const {
@@ -14,7 +14,7 @@ const {
   mesErrNoDataFixProgrammUser400,
   mesErrFixUpdateProgrammUser
 } = require('../utils/messageServer');
-const todayGroups = require('../utils/todayGroups');
+// const todayGroups = require('../utils/todayGroups');
 
 module.exports.getUserMe = (req, res, next) => {
   User.findById(req.user._id)
