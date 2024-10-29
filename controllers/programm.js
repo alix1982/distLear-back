@@ -3,7 +3,6 @@ const NoDate_404 = require('../errors/404-noDate');
 const NotAcceptable_406 = require('../errors/406-notAcceptable');
 const ConflictData_409 = require('../errors/409-conflictData');
 const Programm = require('../models/programm');
-// const translit = require('../utils/translit');
 
 const {
   mesErrValidationProgramm400,

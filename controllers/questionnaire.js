@@ -14,10 +14,11 @@ module.exports.createQuestionnaireUser = async (req, res, next) => {
       postWork, postGoAndChs, yearPreviousQualification,
       education, snils, citizenship, consentProcessingPersonalData
     } = req.body;
-    console.log(consentProcessingPersonalData)
+
     // if (!emailRequst) {
     //   return res.status(400).json({ message: 'Email is required.' });
     // }
+
     // готовим данные для отправки на почту
     const options = {
       to: emailRequst,

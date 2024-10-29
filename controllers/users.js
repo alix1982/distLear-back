@@ -1,6 +1,6 @@
 const IncorrectData_400 = require('../errors/400-incorrectData');
 const NoDate_404 = require('../errors/404-noDate');
-const Group = require('../models/group');
+// const Group = require('../models/group');
 const Questionnaire = require('../models/questionnaire');
 const User = require('../models/user');
 const {
@@ -14,6 +14,7 @@ const {
   mesErrNoDataFixProgrammUser400,
   mesErrFixUpdateProgrammUser
 } = require('../utils/messageServer');
+const todayGroups = require('../utils/todayGroups');
 
 module.exports.getUserMe = (req, res, next) => {
   User.findById(req.user._id)
@@ -51,7 +52,8 @@ module.exports.getDataMe = (req, res, next) => {
     .catch(next);
 };
 
-module.exports.getUserGroup = (req, res, next) => {
+module.exports.getUserGroup = async (req, res, next) => {
+
   User.findById(req.user._id)
     .then((user) => {
       if (user === null) {
@@ -65,7 +67,11 @@ module.exports.getUserGroup = (req, res, next) => {
       // поиск групп по массиву id групп пользователя
       Group.find({ _id: {$in : groupsUser}})
         .then((groups) => {
-          res.send(groups);
+          const dataToday = Date.now();
+          const groupsFilter = groups.filter((group)=>{
+            return((group.dateStart <= dataToday) && (group.dateEnd >= dataToday))
+          });
+          res.send(groupsFilter);
         })
         .catch((err) => {
           console.log(err.name);
