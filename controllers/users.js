@@ -1,5 +1,6 @@
 const IncorrectData_400 = require('../errors/400-incorrectData');
 const NoDate_404 = require('../errors/404-noDate');
+const ConflictData_409 = require('../errors/409-conflictData');
 const Group = require('../models/group');
 const Questionnaire = require('../models/questionnaire');
 const User = require('../models/user');
@@ -12,8 +13,12 @@ const {
   mesErrNoGroup404,
   mesErrNoKeyFixProgrammUser400,
   mesErrNoDataFixProgrammUser400,
-  mesErrFixUpdateProgrammUser
+  mesErrFixUpdateProgrammUser,
+  mesErrIdQuestionnaire400,
+  mesErrValidationQuestionnaire400,
+  mesErrConflictQuestionnaire409
 } = require('../utils/messageServer');
+const todayGroups = require('../utils/todayGroups');
 // const todayGroups = require('../utils/todayGroups');
 
 module.exports.getUserMe = (req, res, next) => {
@@ -38,16 +43,65 @@ module.exports.getDataMe = (req, res, next) => {
       return user;
     })
     .then((user)=> {
-      // поиск анкеты пользователя
-      Questionnaire.find( { snils: user.snils } )
-        .then((questionnaire)=> {
-          if (questionnaire === null) {
-            throw new NoDate_404(mesErrNoQuestionnaire404);
-          }
-          userData = {user: user, questionnaire: questionnaire[0]}
-          // вывод данных пользователя и его анкеты
-          res.send(userData);
+      // формирование массива с id групп пользователя
+      let groupsUser = [];
+      user.education.map((item)=>
+        groupsUser = [...groupsUser, String(item.group)]
+      );
+      // поиск групп по массиву id групп пользователя
+      Group.find({ _id: {$in : groupsUser}})
+        .then((groups) => {
+          const dataToday = Date.now();
+          const groupsFilter = groups.filter((group)=>{
+            return((group.dateStart <= dataToday) && (group.dateEnd >= dataToday))
+          });
+          return groupsFilter;
         })
+        .then((groupsFilter) => {
+          // поиск анкеты пользователя
+          Questionnaire.find( { snils: user.snils } )
+            .then((questionnaire)=> {
+              if (questionnaire === null) {
+                throw new NoDate_404(mesErrNoQuestionnaire404);
+              }
+              // фильтрация по дате списка обучений пользователя для получения актуальных (действующих)
+              const userEducationFilter = user.education.filter((item)=>
+                groupsFilter.filter((group)=>String(item.group) === String(group._id)).length > 0
+              )
+              user.education = userEducationFilter;
+              userData = {user: user, questionnaire: questionnaire[0]}
+              // вывод данных пользователя и его анкеты
+              res.send(userData);
+            })
+            .catch((err)=>{
+              if (err.name === 'CastError') {
+                next(new IncorrectData_400(mesErrIdQuestionnaire400));
+                return;
+              }
+              if (err.name === 'ValidationError') {
+                return next(new IncorrectData_400(mesErrValidationQuestionnaire400));
+              }
+              if (err.code === 11000) {
+                return next(new ConflictData_409(mesErrConflictQuestionnaire409));
+              }
+              next(err);
+            })
+        })
+        .catch((err) => {
+          console.log(err.name);
+          if (err.name === 'CastError') {
+            next(new IncorrectData_400(mesErrIdUser400));
+            return;
+          }
+          if (err.name === 'TypeError') {
+            next(new NoDate_404(mesErrNoGroup404));
+            return;
+          };
+          if (err.name === 'ValidationError') {
+            return next(new IncorrectData_400(mesErrValidationUser400));
+          }
+          next(err);
+        });
     })
     .catch(next);
 };
@@ -59,6 +113,9 @@ module.exports.getUserGroup = async (req, res, next) => {
       if (user === null) {
         throw new NoDate_404(mesErrNoUser404);
       }
+      // const groupSort = todayGroups(user);
+      // res.send(groupSort)
+
       // формирование массива с id групп пользователя
       let groupsUser = [];
       user.education.map((item)=>
