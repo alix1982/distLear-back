@@ -18,7 +18,6 @@ const {
   mesErrValidationQuestionnaire400,
   mesErrConflictQuestionnaire409
 } = require('../utils/messageServer');
-const todayGroups = require('../utils/todayGroups');
 // const todayGroups = require('../utils/todayGroups');
 
 module.exports.getUserMe = (req, res, next) => {
