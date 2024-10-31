@@ -6,7 +6,7 @@ const { mesErrCelebratePhone400 } = require('../utils/messageServer');
 module.exports.validationRouterLogin = celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
-    password: Joi.string().required().min(1).max(6),
+    password: Joi.string().required().min(1).max(20),
     snils: Joi.string().min(11).max(11),
   }),
 });
