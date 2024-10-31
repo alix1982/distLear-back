@@ -37,25 +37,9 @@ module.exports.login = (req, res, next) => {
   }
 };
 
-// module.exports.createPasswordAdmin = (req, res, next) => {
-//   console.log("нужен пароль");
-//   res.send("нужен пароль");
-// };
-
 module.exports.createPasswordAdmin = (req, res, next) => {
-  bcrypt.hash(req.body.password, 10)
-    .then((hash) => {
-      console.log('ok');
-      const passwordRes = {
-        password: req.body.password,
-        hash: hash,
-      };
-      res.send(passwordRes);
-    })
-    .catch((err) => {
-      console.log(err);
-      next(err);
-    });
+  console.log("нужен пароль");
+  res.send("нужен пароль");
 };
 
 // module.exports.createUser = (req, res, next) => {
