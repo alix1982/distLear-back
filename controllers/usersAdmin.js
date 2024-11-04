@@ -23,7 +23,7 @@ const {
   mesErrIdGroup400,
   mesErrUserEducationPast400,
   mesErrDeleteUser406,
-  mesErrNoProgramm404
+  mesErrNoProgramm404,
 } = require('../utils/messageServer');
 
 module.exports.getUsers = (req, res, next) => {
@@ -42,8 +42,8 @@ module.exports.createUser = (req, res, next) => {
   let userQuestionnaire = {};
 
   // поиск анкеты по снилсу
-  Questionnaire.find( { snils: snils } )
-    .then((questionnaire)=> {
+  Questionnaire.find({ snils: snils })
+    .then((questionnaire) => {
       if (questionnaire === null) {
         throw new NoDate_404(mesErrNoQuestionnaire404);
       }
@@ -51,7 +51,7 @@ module.exports.createUser = (req, res, next) => {
       userQuestionnaire = questionnaire[0];
       return userQuestionnaire;
     })
-    .then((userQuestionnaire)=>{
+    .then((userQuestionnaire) => {
       // вариант с шифрованием пароля пользователя
       // const pas = String(Math.floor(Math.random() * 100000));
 
@@ -64,20 +64,20 @@ module.exports.createUser = (req, res, next) => {
       //     education: []
       //   }))
       // создание пользователя с открытым паролем
-        User.create({
-          snils: snils,
-          avatar: '',
-          name: translit(userQuestionnaire.firstName),
-          password: Math.floor(Math.random() * 100000),
-          isHash: false,
-          education: []
-        })
+      User.create({
+        snils: snils,
+        avatar: '',
+        name: translit(userQuestionnaire.firstName),
+        password: Math.floor(Math.random() * 100000),
+        isHash: false,
+        education: [],
+      })
         .then((user) => {
           const userRes = {
             snils: user.snils,
             name: user.name,
             password: user.password,
-            education: user.education
+            education: user.education,
           };
           res.send(userRes);
         })
@@ -101,8 +101,8 @@ module.exports.addGroupUserAdmin = (req, res, next) => {
   const { groupName } = req.body;
 
   // изменение статуса использования программы при добавлении ее пользователю
-  Group.findOneAndUpdate({name: groupName}, {assigned: true}, { new: true, runValidators: true })
-    .then((group)=> {
+  Group.findOneAndUpdate({ name: groupName }, { assigned: true }, { new: true, runValidators: true })
+    .then((group) => {
       if (group === null) {
         throw new NoDate_404(mesErrNoGroup404);
       }
@@ -118,16 +118,18 @@ module.exports.addGroupUserAdmin = (req, res, next) => {
                 throw new NoDate_404(mesErrNoUser404);
               }
               // проверка повторного включения в группу
-              user.education.forEach(item => {
+              user.education.forEach((item) => {
                 if (String(item.group) === String(group._id)) {
                   throw new ConflictData_409(mesErrConflictUserGroup409);
                 }
-              })
+              });
               //
               // включение пользователя в группу
               User.findByIdAndUpdate(
                 req.params._id,
-                {education: [...user.education, {group, programm: programm}]},
+                {
+                  education: [...user.education, { group, programm: programm }],
+                },
                 { new: true, runValidators: true }
               )
                 .then((user) => {
@@ -141,11 +143,11 @@ module.exports.addGroupUserAdmin = (req, res, next) => {
                   if (err.name === 'CastError') {
                     next(new IncorrectData_400(mesErrIdUser400));
                     return;
-                  };
+                  }
                   if (err.name === 'ValidationError') {
                     next(new IncorrectData_400(mesErrValidationUser400));
                     return;
-                  };
+                  }
                   next(err);
                 });
               //
@@ -155,11 +157,11 @@ module.exports.addGroupUserAdmin = (req, res, next) => {
               if (err.name === 'CastError') {
                 next(new IncorrectData_400(mesErrIdUser400));
                 return;
-              };
+              }
               if (err.name === 'ValidationError') {
                 next(new IncorrectData_400(mesErrValidationUser400));
                 return;
-              };
+              }
               next(err);
             });
         })
@@ -168,11 +170,11 @@ module.exports.addGroupUserAdmin = (req, res, next) => {
           if (err.name === 'CastError') {
             next(new IncorrectData_400(mesErrIdProgramm400));
             return;
-          };
+          }
           if (err.name === 'ValidationError') {
             next(new IncorrectData_400(mesErrValidationProgramm400));
             return;
-          };
+          }
           next(err);
         });
     })
@@ -181,15 +183,15 @@ module.exports.addGroupUserAdmin = (req, res, next) => {
       if (err.name === 'CastError') {
         next(new IncorrectData_400(mesErrIdGroup400));
         return;
-      };
+      }
       if (err.name === 'TypeError') {
         next(new NoDate_404(mesErrNoGroup404));
         return;
-      };
+      }
       if (err.name === 'ValidationError') {
         next(new IncorrectData_400(mesErrValidationGroup400));
         return;
-      };
+      }
       next(err);
     });
 };
@@ -205,12 +207,12 @@ module.exports.deleteGroupUserAdmin = (req, res, next) => {
       }
       //поиск группы для сравнения с группами пользователя
       Group.findById(groupId)
-        .then((group)=>{
+        .then((group) => {
           if (group === null) {
             throw new NoDate_404(mesErrNoGroup404);
           }
           // поиск индекса группы в списке групп пользователя
-          const groupDelNumber = user.education.findIndex((item)=>String(item.group) === String(groupId));
+          const groupDelNumber = user.education.findIndex((item) => String(item.group) === String(groupId));
           // если группа не найдена
           if (groupDelNumber < 0) {
             throw new NoDate_404(mesErrNoGroup404);
@@ -224,27 +226,25 @@ module.exports.deleteGroupUserAdmin = (req, res, next) => {
           education.splice(groupDelNumber, 1);
 
           // удаление группы из списка групп пользователя
-          User.findByIdAndUpdate(req.params._id, {education: education}, { new: true, runValidators: true })
+          User.findByIdAndUpdate(req.params._id, { education: education }, { new: true, runValidators: true })
             .then((userUpdate) => {
               if (user === null) {
                 throw new NoDate_404(mesErrNoUser404);
               }
               // поиск всех пользователей для проверки наличия группы у всех пользователей и если ее нет смены статуса assigned у группы
               User.find({})
-                .then((users)=>{
+                .then((users) => {
                   if (users.length === 0) {
                     throw new NoDate_404(mesErrNoUser404);
                   }
                   let usersGroup = [];
                   users.map((user) =>
-                      user.education.map((item)=>
-                        (String(item.group) === groupId) && (usersGroup = [...usersGroup, user])
-                      )
+                    user.education.map((item) => String(item.group) === groupId && (usersGroup = [...usersGroup, user]))
                   );
                   if (usersGroup.length <= 0) {
                     // изменение статуса assigned у группы если она никому не назначена
-                    Group.findByIdAndUpdate(groupId, {assigned: false}, { new: true, runValidators: true })
-                      .then((group)=>{
+                    Group.findByIdAndUpdate(groupId, { assigned: false }, { new: true, runValidators: true })
+                      .then((group) => {
                         if (group === null) {
                           throw new NoDate_404(mesErrNoGroup404);
                         }
@@ -255,54 +255,52 @@ module.exports.deleteGroupUserAdmin = (req, res, next) => {
                         if (err.name === 'CastError') {
                           next(new IncorrectData_400(mesErrIdGroup400));
                           return;
-                        };
+                        }
                         if (err.name === 'TypeError') {
                           next(new NoDate_404(mesErrNoGroup404));
                           return;
-                        };
+                        }
                         if (err.name === 'ValidationError') {
                           next(new IncorrectData_400(mesErrValidationGroup400));
                           return;
-                        };
+                        }
                         next(err);
                       });
                   } else {
                     res.send(userUpdate);
                   }
-
                 })
                 .catch((err) => {
                   console.log(err.name);
                   if (err.name === 'CastError') {
                     next(new IncorrectData_400(mesErrIdUser400));
                     return;
-                  };
+                  }
                   if (err.name === 'TypeError') {
                     next(new NoDate_404(mesErrNoUser404));
                     return;
-                  };
+                  }
                   if (err.name === 'ValidationError') {
                     next(new IncorrectData_400(mesErrValidationUser400));
                     return;
-                  };
+                  }
                   next(err);
                 });
-
             })
             .catch((err) => {
               console.log(err.name);
               if (err.name === 'CastError') {
                 next(new IncorrectData_400(mesErrIdUser400));
                 return;
-              };
+              }
               if (err.name === 'TypeError') {
                 next(new NoDate_404(mesErrNoUser404));
                 return;
-              };
+              }
               if (err.name === 'ValidationError') {
                 next(new IncorrectData_400(mesErrValidationUser400));
                 return;
-              };
+              }
               next(err);
             });
         })
@@ -311,15 +309,15 @@ module.exports.deleteGroupUserAdmin = (req, res, next) => {
           if (err.name === 'CastError') {
             next(new IncorrectData_400(mesErrIdGroup400));
             return;
-          };
+          }
           if (err.name === 'TypeError') {
             next(new NoDate_404(mesErrNoGroup404));
             return;
-          };
+          }
           if (err.name === 'ValidationError') {
             next(new IncorrectData_400(mesErrValidationGroup400));
             return;
-          };
+          }
           next(err);
         });
     })
@@ -328,15 +326,15 @@ module.exports.deleteGroupUserAdmin = (req, res, next) => {
       if (err.name === 'CastError') {
         next(new IncorrectData_400(mesErrIdUser400));
         return;
-      };
+      }
       if (err.name === 'TypeError') {
         next(new NoDate_404(mesErrNoUser404));
         return;
-      };
+      }
       if (err.name === 'ValidationError') {
         next(new IncorrectData_400(mesErrValidationUser400));
         return;
-      };
+      }
       next(err);
     });
 };
@@ -363,4 +361,3 @@ module.exports.deleteUserAdmin = (req, res, next) => {
       next(err);
     });
 };
-

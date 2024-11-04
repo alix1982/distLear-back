@@ -30,39 +30,37 @@ module.exports.getGroups = (req, res, next) => {
 };
 
 module.exports.createGroup = (req, res, next) => {
-
   const { name, dateStart, dateEnd, programmName } = req.body;
 
   // изменение статуса использования программы
-  Programm.findOneAndUpdate({name: programmName}, {applies: true}, { new: true, runValidators: true })
-    .then((prog)=>{
-      if (prog === null) {
-        throw new NoDate_404(mesErrNoProgramm404);
-      }
-      Group.create({
+  Programm.findOneAndUpdate({ name: programmName }, { applies: true }, { new: true, runValidators: true }).then((prog) => {
+    if (prog === null) {
+      throw new NoDate_404(mesErrNoProgramm404);
+    }
+    Group.create({
       name,
       assigned: false,
       dateStart,
       dateEnd,
       programm: prog,
-      })
-        .then((group) => {
-          res.send(group);
-        })
-        .catch((err) => {
-          console.log(err.name);
-
-          if (err.name === 'ValidationError') {
-            next(new IncorrectData_400(mesErrValidationGroup400));
-            return;
-          }
-          if (err.code === 11000) {
-            next(new ConflictData_409(mesErrConflictGroup409));
-            return;
-          }
-          next(err);
-        });
     })
+      .then((group) => {
+        res.send(group);
+      })
+      .catch((err) => {
+        console.log(err.name);
+
+        if (err.name === 'ValidationError') {
+          next(new IncorrectData_400(mesErrValidationGroup400));
+          return;
+        }
+        if (err.code === 11000) {
+          next(new ConflictData_409(mesErrConflictGroup409));
+          return;
+        }
+        next(err);
+      });
+  });
 };
 
 module.exports.deleteGroup = (req, res, next) => {
@@ -79,19 +77,20 @@ module.exports.deleteGroup = (req, res, next) => {
     })
     .then((group) => {
       Group.find({})
-        .then((groups)=>{
+        .then((groups) => {
           if (groups.length === 0) {
             throw new NoDate_404(mesErrNoGroup404);
           }
           // формирование массива групп в которых используется такая же программа
           let groupsProgramm = [];
-          groups.map((groupProgramm) =>
-            (String(groupProgramm.programm) === String(group.programm)) && (groupsProgramm = [...groupsProgramm, groupProgramm])
+          groups.map(
+            (groupProgramm) =>
+              String(groupProgramm.programm) === String(group.programm) && (groupsProgramm = [...groupsProgramm, groupProgramm])
           );
           if (groupsProgramm.length <= 0) {
             // изменение статуса applies у программы если она никому не назначена
-            Programm.findByIdAndUpdate(group.programm, {applies: false}, { new: true, runValidators: true })
-              .then((programm)=>{
+            Programm.findByIdAndUpdate(group.programm, { applies: false }, { new: true, runValidators: true })
+              .then((programm) => {
                 if (programm === null) {
                   throw new NoDate_404(mesErrNoProgramm404);
                 }
@@ -102,7 +101,7 @@ module.exports.deleteGroup = (req, res, next) => {
                 if (err.name === 'TypeError') {
                   next(new NoDate_404(mesErrNoProgramm404));
                   return;
-                };
+                }
                 if (err.name === 'CastError') {
                   next(new IncorrectData_400(mesErrIdProgramm400));
                   return;

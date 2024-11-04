@@ -6,5 +6,4 @@ router.post('/questionnaire', validationRouterCreateQuestionnaireUser, createQue
 
 router.post('/question', validationRouterQuestion, createQuestion);
 
-
 module.exports = router;

@@ -14,17 +14,17 @@ const programmSchema = new mongoose.Schema({
     required: true,
   },
   startTest: {
-    time:{type: Number, required: true},
-    passed:{type: Boolean, required: true}
+    time: { type: Number, required: true },
+    passed: { type: Boolean, required: true },
   },
   blocks: {
     type: Object,
     required: true,
   },
   finallyTest: {
-    time:{type: Number, required: true},
-    passed:{type: Boolean, required: true}
-  }
+    time: { type: Number, required: true },
+    passed: { type: Boolean, required: true },
+  },
 });
 
 module.exports = mongoose.model('programm', programmSchema);

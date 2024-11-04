@@ -48,31 +48,36 @@ module.exports.createProgramm = (req, res, next) => {
   // );
 
   // создание обьекта с блоками
-  const createBlocks = ()=> {
+  const createBlocks = () => {
     const blocksObj = {};
 
     const createThema = (i) => {
       const themesObj = {};
       for (let j = 0; j < themaCount[i]; j++) {
-        themesObj[`thema${j+1}`] = { timestart: 0, timeend: 0, passed: false, name: `thema${j+1}` }
+        themesObj[`thema${j + 1}`] = {
+          timestart: 0,
+          timeend: 0,
+          passed: false,
+          name: `thema${j + 1}`,
+        };
       }
-      return themesObj
+      return themesObj;
     };
 
     for (let i = 0; i < blockCount; i++) {
-      blocksObj[`block${i+1}`] = createThema(i);
-      blocksObj[`block${i+1}`].name = `block${i+1}`;
-      blocksObj[`block${i+1}`].test = {time:0, passed: false}
-    };
+      blocksObj[`block${i + 1}`] = createThema(i);
+      blocksObj[`block${i + 1}`].name = `block${i + 1}`;
+      blocksObj[`block${i + 1}`].test = { time: 0, passed: false };
+    }
     return blocksObj;
-  }
+  };
 
   Programm.create({
     name: name,
     applies: false,
-    startTest: {time:0, passed: false},
+    startTest: { time: 0, passed: false },
     blocks: createBlocks(),
-    finallyTest: {time:0, passed: false}
+    finallyTest: { time: 0, passed: false },
   })
     .then((programm) => {
       res.send(programm);

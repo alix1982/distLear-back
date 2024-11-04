@@ -20,10 +20,14 @@ module.exports.validationRouterCreateQuestionnaireUser = celebrate({
     patronymic: Joi.string().required().min(2).max(30),
     workName: Joi.string().required().min(2).max(30),
     email: Joi.string().email().required(),
-    phone: Joi.string().required().custom((values, helpers) => {
-      if (validator.isMobilePhone(values)) { return values; }
-      return helpers.message(mesErrCelebratePhone400);
-    }),
+    phone: Joi.string()
+      .required()
+      .custom((values, helpers) => {
+        if (validator.isMobilePhone(values)) {
+          return values;
+        }
+        return helpers.message(mesErrCelebratePhone400);
+      }),
     postWork: Joi.string().required().min(2).max(30),
     postGoAndChs: Joi.string().required().min(2).max(30),
     yearPreviousQualification: Joi.number().required().min(1950).max(2100),
@@ -39,10 +43,14 @@ module.exports.validationRouterQuestion = celebrate({
     emailRequst: Joi.string().email().required(),
     name: Joi.string().required().min(2).max(30),
     email: Joi.string().email().required(),
-    phone: Joi.string().required().custom((values, helpers) => {
-      if (validator.isMobilePhone(values)) { return values; }
-      return helpers.message(mesErrCelebratePhone400);
-    }),
+    phone: Joi.string()
+      .required()
+      .custom((values, helpers) => {
+        if (validator.isMobilePhone(values)) {
+          return values;
+        }
+        return helpers.message(mesErrCelebratePhone400);
+      }),
     question: Joi.string().required().min(2).max(1000),
   }),
 });
@@ -55,10 +63,14 @@ module.exports.validationRouterCreateQuestionnaireAdmin = celebrate({
     patronymic: Joi.string().required().min(2).max(30),
     workName: Joi.string().required().min(2).max(30),
     email: Joi.string().email().required(),
-    phone: Joi.string().required().custom((values, helpers) => {
-      if (validator.isMobilePhone(values)) { return values; }
-      return helpers.message(mesErrCelebratePhone400);
-    }),
+    phone: Joi.string()
+      .required()
+      .custom((values, helpers) => {
+        if (validator.isMobilePhone(values)) {
+          return values;
+        }
+        return helpers.message(mesErrCelebratePhone400);
+      }),
     postWork: Joi.string().required().min(2).max(30),
     postGoAndChs: Joi.string().required().min(2).max(30),
     yearPreviousQualification: Joi.number().required().min(1950).max(2100),
@@ -78,7 +90,9 @@ module.exports.validationRouterFixQuestionnaireAdmin = celebrate({
     workName: Joi.string().min(2).max(30),
     email: Joi.string().email(),
     phone: Joi.string().custom((values, helpers) => {
-      if (validator.isMobilePhone(values)) { return values; }
+      if (validator.isMobilePhone(values)) {
+        return values;
+      }
       return helpers.message(mesErrCelebratePhone400);
     }),
     postWork: Joi.string().min(2).max(30),
@@ -150,7 +164,6 @@ module.exports.validationRouterUpdateProgramm = celebrate({
     keyChange: Joi.string().required().min(1).max(10),
   }),
 });
-
 
 // валидация роутов программ для администратора
 module.exports.validationRouterCreateProgramm = celebrate({

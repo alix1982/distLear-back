@@ -31,26 +31,28 @@ const userSchema = new mongoose.Schema({
     maxlength: 11,
     unique: true,
   },
-  education: [{
-    group: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'group',
-    },
-    programm: {
-      type: Object,
-      block:{
-        thema:{
-          timestart:{type: Number, required: true},
-          timeend:{type: Number, required: true},
-          passed:{type: Boolean, required: true}
+  education: [
+    {
+      group: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'group',
+      },
+      programm: {
+        type: Object,
+        block: {
+          thema: {
+            timestart: { type: Number, required: true },
+            timeend: { type: Number, required: true },
+            passed: { type: Boolean, required: true },
+          },
+          test: {
+            time: { type: Number, required: true },
+            passed: { type: Boolean, required: true },
+          },
         },
-        test:{
-          time:{type: Number, required: true},
-          passed:{type: Boolean, required: true}
-        }
-      }
-    }
-  }]
+      },
+    },
+  ],
 });
 
 module.exports = mongoose.model('user', userSchema);

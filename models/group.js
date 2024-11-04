@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 // const validator = require('validator');
 
 const groupSchema = new mongoose.Schema({
-
   name: {
     type: String,
     required: true,
@@ -14,11 +13,11 @@ const groupSchema = new mongoose.Schema({
     type: Boolean,
     required: true,
   },
-  dateStart:{
+  dateStart: {
     type: Number,
     required: true,
   },
-  dateEnd:{
+  dateEnd: {
     type: Number,
     required: true,
   },
@@ -26,7 +25,7 @@ const groupSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'programm',
     required: true,
-  }
+  },
 });
 
 module.exports = mongoose.model('group', groupSchema);

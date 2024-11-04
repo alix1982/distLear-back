@@ -29,9 +29,18 @@ module.exports.createQuestionnaireAdmin = createQuestionnaire;
 
 module.exports.patchQuestionnaireAdmin = (req, res, next) => {
   const {
-    firstName, lastName, patronymic, workName, email, phone,
-    postWork, postGoAndChs, yearPreviousQualification,
-    education, snils, citizenship
+    firstName,
+    lastName,
+    patronymic,
+    workName,
+    email,
+    phone,
+    postWork,
+    postGoAndChs,
+    yearPreviousQualification,
+    education,
+    snils,
+    citizenship,
   } = req.body;
   Questionnaire.findById(req.params._id)
     .then((questionnaire) => {
@@ -39,29 +48,31 @@ module.exports.patchQuestionnaireAdmin = (req, res, next) => {
         throw new NoDate_404(mesErrNoQuestionnaire404);
       }
       return questionnaire.updateOne(
-        {$set: {
-          firstName: firstName,
-          lastName: lastName,
-          patronymic: patronymic,
-          workName: workName,
-          email: email,
-          phone: phone,
-          postWork: postWork,
-          postGoAndChs: postGoAndChs,
-          yearPreviousQualification: yearPreviousQualification,
-          education: education,
-          snils: snils,
-          citizenship: citizenship,
-        }},
+        {
+          $set: {
+            firstName: firstName,
+            lastName: lastName,
+            patronymic: patronymic,
+            workName: workName,
+            email: email,
+            phone: phone,
+            postWork: postWork,
+            postGoAndChs: postGoAndChs,
+            yearPreviousQualification: yearPreviousQualification,
+            education: education,
+            snils: snils,
+            citizenship: citizenship,
+          },
+        },
         { new: true, runValidators: true }
       );
     })
     .then((questionnaire) => {
       // формирование ответа при успешном (или неудачном) изменении анкеты
       if (questionnaire.acknowledged === true) {
-        return res.send({ message: mesFixQuestionnaire })
+        return res.send({ message: mesFixQuestionnaire });
       } else {
-        return res.send(questionnaire)
+        return res.send(questionnaire);
       }
     })
     .catch((err) => {
@@ -88,18 +99,16 @@ module.exports.patchQuestionnaireAdminModeration = (req, res, next) => {
         throw new NoDate_404(mesErrNoQuestionnaire404);
       }
       // изменение статуса модерации анкеты
-      return questionnaire.updateOne({$set: { isModeration: isModeration }}, { new: true, runValidators: true });
+      return questionnaire.updateOne({ $set: { isModeration: isModeration } }, { new: true, runValidators: true });
     })
     .then((questionnaire) => {
       // формирование ответа при успешном (или неудачном) изменения статуса модерации анкеты
       if (questionnaire.acknowledged === true) {
         return res.send(
-          isModeration ?
-            { message: mesModerationQuestionnaireCompleted } :
-            { message: mesModerationQuestionnaireCancelled }
-        )
+          isModeration ? { message: mesModerationQuestionnaireCompleted } : { message: mesModerationQuestionnaireCancelled }
+        );
       } else {
-        return res.send(questionnaire)
+        return res.send(questionnaire);
       }
     })
     .catch((err) => {

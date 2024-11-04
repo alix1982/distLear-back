@@ -1,9 +1,6 @@
 const router = require('express').Router();
 
-const {
-  validationRouterCreateGroup,
-  validationRouterDeleteGroup
-} = require('../validations/validationRouter');
+const { validationRouterCreateGroup, validationRouterDeleteGroup } = require('../validations/validationRouter');
 
 const { getGroups, createGroup, deleteGroup, getGroup } = require('../controllers/group');
 

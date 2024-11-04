@@ -27,5 +27,4 @@ router.use(groupRouterAdmin);
 
 router.use(errorRouter);
 
-
 module.exports = router;

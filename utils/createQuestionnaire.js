@@ -1,13 +1,23 @@
-const ConflictData_409 = require("../errors/409-conflictData");
-const IncorrectData_400 = require("../errors/400-incorrectData");
-const Questionnaire = require("../models/questionnaire");
-const { mesErrConflictQuestionnaire409, mesErrValidationQuestionnaire400, mesQuestion } = require("./messageServer");
+const ConflictData_409 = require('../errors/409-conflictData');
+const IncorrectData_400 = require('../errors/400-incorrectData');
+const Questionnaire = require('../models/questionnaire');
+const { mesErrConflictQuestionnaire409, mesErrValidationQuestionnaire400, mesQuestion } = require('./messageServer');
 
 const createQuestionnaire = (req, res, next) => {
   const {
-    firstName, lastName, patronymic, workName, email, phone,
-    postWork, postGoAndChs, yearPreviousQualification,
-    education, snils, citizenship, consentProcessingPersonalData
+    firstName,
+    lastName,
+    patronymic,
+    workName,
+    email,
+    phone,
+    postWork,
+    postGoAndChs,
+    yearPreviousQualification,
+    education,
+    snils,
+    citizenship,
+    consentProcessingPersonalData,
   } = req.body;
   Questionnaire.create({
     firstName,
@@ -42,4 +52,3 @@ const createQuestionnaire = (req, res, next) => {
 };
 
 module.exports = createQuestionnaire;
-

@@ -10,12 +10,15 @@ module.exports.login = (req, res, next) => {
   const { name, password, snils } = req.body;
 
   if (name === NAME_ADMIN) {
-    bcrypt.compare(password, PASSWORD_ADMIN)
+    bcrypt
+      .compare(password, PASSWORD_ADMIN)
       .then((matched) => {
         if (!matched) {
           throw new NoAuthErr_401(mesErrLogin401);
         } else {
-          const token = jwt.sign({ name: NAME_ADMIN }, JWT_SECRET_ADMIN, { expiresIn: '7d' });
+          const token = jwt.sign({ name: NAME_ADMIN }, JWT_SECRET_ADMIN, {
+            expiresIn: '7d',
+          });
           return res.send({ token, message: mesLoginAdmin });
         }
       })
@@ -27,7 +30,9 @@ module.exports.login = (req, res, next) => {
           throw new NoAuthErr_401(mesErrLoginSnils401);
         }
         if (name === user.name && password === user.password) {
-          const token = jwt.sign({ _id: user._id }, JWT_SECRET_USER, { expiresIn: '7d' });
+          const token = jwt.sign({ _id: user._id }, JWT_SECRET_USER, {
+            expiresIn: '7d',
+          });
           return res.send({ token, message: mesLoginUser });
         } else {
           throw new NoAuthErr_401(mesErrLogin401);
@@ -38,8 +43,8 @@ module.exports.login = (req, res, next) => {
 };
 
 module.exports.createPasswordAdmin = (req, res, next) => {
-  console.log("нужен пароль");
-  res.send("нужен пароль");
+  console.log('нужен пароль');
+  res.send('нужен пароль');
 };
 
 // module.exports.createUser = (req, res, next) => {

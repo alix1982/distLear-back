@@ -4,7 +4,7 @@ const {
   validationRouterCreateUserAdmin,
   validationRouterDeleteUserAdmin,
   validationRouterAddGroupUserAdmin,
-  validationRouterDeleteGroupUserAdmin
+  validationRouterDeleteGroupUserAdmin,
 } = require('../validations/validationRouter');
 
 const { getUsers, createUser, deleteUserAdmin, addGroupUserAdmin, deleteGroupUserAdmin } = require('../controllers/usersAdmin');

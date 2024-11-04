@@ -3,5 +3,5 @@ module.exports = class ConflictData_409 extends Error {
     super(message);
     this.statusCode = 409;
   }
-}
+};
 // module.exports = ConflictData_409;

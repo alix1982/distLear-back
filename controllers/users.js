@@ -16,7 +16,7 @@ const {
   mesErrFixUpdateProgrammUser,
   mesErrIdQuestionnaire400,
   mesErrValidationQuestionnaire400,
-  mesErrConflictQuestionnaire409
+  mesErrConflictQuestionnaire409,
 } = require('../utils/messageServer');
 // const todayGroups = require('../utils/todayGroups');
 
@@ -41,38 +41,36 @@ module.exports.getDataMe = (req, res, next) => {
       }
       return user;
     })
-    .then((user)=> {
+    .then((user) => {
       // формирование массива с id групп пользователя
       let groupsUser = [];
-      user.education.map((item)=>
-        groupsUser = [...groupsUser, String(item.group)]
-      );
+      user.education.map((item) => (groupsUser = [...groupsUser, String(item.group)]));
       // поиск групп по массиву id групп пользователя
-      Group.find({ _id: {$in : groupsUser}})
+      Group.find({ _id: { $in: groupsUser } })
         .then((groups) => {
           const dataToday = Date.now();
-          const groupsFilter = groups.filter((group)=>{
-            return((group.dateStart <= dataToday) && (group.dateEnd >= dataToday))
+          const groupsFilter = groups.filter((group) => {
+            return group.dateStart <= dataToday && group.dateEnd >= dataToday;
           });
           return groupsFilter;
         })
         .then((groupsFilter) => {
           // поиск анкеты пользователя
-          Questionnaire.find( { snils: user.snils } )
-            .then((questionnaire)=> {
+          Questionnaire.find({ snils: user.snils })
+            .then((questionnaire) => {
               if (questionnaire === null) {
                 throw new NoDate_404(mesErrNoQuestionnaire404);
               }
               // фильтрация по дате списка обучений пользователя для получения актуальных (действующих)
-              const userEducationFilter = user.education.filter((item)=>
-                groupsFilter.filter((group)=>String(item.group) === String(group._id)).length > 0
-              )
+              const userEducationFilter = user.education.filter(
+                (item) => groupsFilter.filter((group) => String(item.group) === String(group._id)).length > 0
+              );
               user.education = userEducationFilter;
-              userData = {user: user, questionnaire: questionnaire[0]}
+              userData = { user: user, questionnaire: questionnaire[0] };
               // вывод данных пользователя и его анкеты
               res.send(userData);
             })
-            .catch((err)=>{
+            .catch((err) => {
               if (err.name === 'CastError') {
                 next(new IncorrectData_400(mesErrIdQuestionnaire400));
                 return;
@@ -84,7 +82,7 @@ module.exports.getDataMe = (req, res, next) => {
                 return next(new ConflictData_409(mesErrConflictQuestionnaire409));
               }
               next(err);
-            })
+            });
         })
         .catch((err) => {
           console.log(err.name);
@@ -95,7 +93,7 @@ module.exports.getDataMe = (req, res, next) => {
           if (err.name === 'TypeError') {
             next(new NoDate_404(mesErrNoGroup404));
             return;
-          };
+          }
           if (err.name === 'ValidationError') {
             return next(new IncorrectData_400(mesErrValidationUser400));
           }
@@ -106,7 +104,6 @@ module.exports.getDataMe = (req, res, next) => {
 };
 
 module.exports.getUserGroup = async (req, res, next) => {
-
   User.findById(req.user._id)
     .then((user) => {
       if (user === null) {
@@ -117,15 +114,13 @@ module.exports.getUserGroup = async (req, res, next) => {
 
       // формирование массива с id групп пользователя
       let groupsUser = [];
-      user.education.map((item)=>
-        groupsUser = [...groupsUser, String(item.group)]
-      );
+      user.education.map((item) => (groupsUser = [...groupsUser, String(item.group)]));
       // поиск групп по массиву id групп пользователя
-      Group.find({ _id: {$in : groupsUser}})
+      Group.find({ _id: { $in: groupsUser } })
         .then((groups) => {
           const dataToday = Date.now();
-          const groupsFilter = groups.filter((group)=>{
-            return((group.dateStart <= dataToday) && (group.dateEnd >= dataToday))
+          const groupsFilter = groups.filter((group) => {
+            return group.dateStart <= dataToday && group.dateEnd >= dataToday;
           });
           res.send(groupsFilter);
         })
@@ -138,7 +133,7 @@ module.exports.getUserGroup = async (req, res, next) => {
           if (err.name === 'TypeError') {
             next(new NoDate_404(mesErrNoGroup404));
             return;
-          };
+          }
           if (err.name === 'ValidationError') {
             return next(new IncorrectData_400(mesErrValidationUser400));
           }
@@ -154,13 +149,13 @@ module.exports.getUserGroup = async (req, res, next) => {
       if (err.name === 'TypeError') {
         next(new NoDate_404(mesErrNoGroup404));
         return;
-      };
+      }
       if (err.name === 'ValidationError') {
         return next(new IncorrectData_400(mesErrValidationUser400));
       }
       next(err);
     });
-    // .catch(next);
+  // .catch(next);
 };
 
 module.exports.patchUserProgramm = (req, res, next) => {
@@ -174,12 +169,12 @@ module.exports.patchUserProgramm = (req, res, next) => {
         throw new NoDate_404(mesErrNoUser404);
       }
       // поиск индекса группы в массиве групп пользователя
-      const groupIndex = user.education.findIndex((item)=> String(item.group) === id);
+      const groupIndex = user.education.findIndex((item) => String(item.group) === id);
       if (groupIndex < 0) {
         throw new NoDate_404(mesErrNoGroup404);
       }
       // поиск id группы пользователя в списке групп пользователя
-      const groupId = user.education.find((item)=> String(item.group) === id).group;
+      const groupId = user.education.find((item) => String(item.group) === id).group;
       const time = new Date().getTime();
       // const educationUser = user.education[groupIndex].programm;
       // получение обьекта блоков обучения нужной программы пользователя
@@ -188,16 +183,23 @@ module.exports.patchUserProgramm = (req, res, next) => {
       // начало темы пользователем
       if (keyChange === 'start') {
         try {
-          educationUserBlocks[`block${block}`][`thema${thema}`].timestart = time
+          educationUserBlocks[`block${block}`][`thema${thema}`].timestart = time;
         } catch (error) {
           throw new IncorrectData_400(mesErrNoDataFixProgrammUser400);
         }
 
         return user.updateOne(
-          {$set: { "education.$[idGroup].programm.blocks": educationUserBlocks }},
-          { new: true, runValidators: true, arrayFilters: [ { "idGroup.group": { $eq: groupId } } ] }
+          {
+            $set: {
+              'education.$[idGroup].programm.blocks': educationUserBlocks,
+            },
+          },
+          {
+            new: true,
+            runValidators: true,
+            arrayFilters: [{ 'idGroup.group': { $eq: groupId } }],
+          }
         );
-
       } else if (keyChange === 'end') {
         // окончание темы пользователем
         try {
@@ -208,8 +210,16 @@ module.exports.patchUserProgramm = (req, res, next) => {
         }
 
         return user.updateOne(
-          {$set: { "education.$[idGroup].programm.blocks": educationUserBlocks }},
-          { new: true, runValidators: true, arrayFilters: [ { "idGroup.group": { $eq: groupId } } ] }
+          {
+            $set: {
+              'education.$[idGroup].programm.blocks': educationUserBlocks,
+            },
+          },
+          {
+            new: true,
+            runValidators: true,
+            arrayFilters: [{ 'idGroup.group': { $eq: groupId } }],
+          }
         );
       } else if (keyChange === 'testBlock') {
         // успешное прохождение промежуточного теста (в блоке)
@@ -222,28 +232,46 @@ module.exports.patchUserProgramm = (req, res, next) => {
         }
 
         return user.updateOne(
-          {$set: { "education.$[idGroup].programm.blocks": educationUserBlocks }},
-          { new: true, runValidators: true, arrayFilters: [ { "idGroup.group": { $eq: groupId } } ] }
+          {
+            $set: {
+              'education.$[idGroup].programm.blocks': educationUserBlocks,
+            },
+          },
+          {
+            new: true,
+            runValidators: true,
+            arrayFilters: [{ 'idGroup.group': { $eq: groupId } }],
+          }
         );
       } else if (keyChange === 'testStart') {
         // прохождение входного теста
         return user.updateOne(
-          {$set: {
-            "education.$[idGroup].programm.startTest.passed": true,
-            "education.$[idGroup].programm.startTest.time": time,
-
-           }},
-          { new: true, runValidators: true, arrayFilters: [ { "idGroup.group": { $eq: groupId } } ] }
+          {
+            $set: {
+              'education.$[idGroup].programm.startTest.passed': true,
+              'education.$[idGroup].programm.startTest.time': time,
+            },
+          },
+          {
+            new: true,
+            runValidators: true,
+            arrayFilters: [{ 'idGroup.group': { $eq: groupId } }],
+          }
         );
       } else if (keyChange === 'testFinally') {
         // успешное прохождение финального теста
         return user.updateOne(
-          {$set: {
-            "education.$[idGroup].programm.finallyTest.passed": true,
-            "education.$[idGroup].programm.finallyTest.time": time,
-
-           }},
-          { new: true, runValidators: true, arrayFilters: [ { "idGroup.group": { $eq: groupId } } ] }
+          {
+            $set: {
+              'education.$[idGroup].programm.finallyTest.passed': true,
+              'education.$[idGroup].programm.finallyTest.time': time,
+            },
+          },
+          {
+            new: true,
+            runValidators: true,
+            arrayFilters: [{ 'idGroup.group': { $eq: groupId } }],
+          }
         );
       } else {
         throw new IncorrectData_400(mesErrNoKeyFixProgrammUser400);
@@ -252,22 +280,22 @@ module.exports.patchUserProgramm = (req, res, next) => {
     .then((userNew) => {
       if (userNew.acknowledged === true) {
         // формирование ответа при положительном прохождении запроса
-        User.findById(req.user._id)
-          .then((user)=>{
-            if (user === null) {
-              throw new NoDate_404(mesErrNoUser404);
-            }
-            const groupIndex = user.education.findIndex((item)=> String(item.group) === id)
-            return res.send({
-              message: mesAddProgrammUserCompleted, userGroup: user.education[groupIndex]
-            })
-        })
+        User.findById(req.user._id).then((user) => {
+          if (user === null) {
+            throw new NoDate_404(mesErrNoUser404);
+          }
+          const groupIndex = user.education.findIndex((item) => String(item.group) === id);
+          return res.send({
+            message: mesAddProgrammUserCompleted,
+            userGroup: user.education[groupIndex],
+          });
+        });
       } else {
         // формирование ответа при отрицательном прохождении запроса
         return res.send({
           userNew: userNew,
           message: mesErrFixUpdateProgrammUser,
-        })
+        });
       }
     })
     .catch((err) => {
@@ -279,7 +307,7 @@ module.exports.patchUserProgramm = (req, res, next) => {
       if (err.name === 'TypeError') {
         next(new NoDate_404(mesErrFixUpdateProgrammUser));
         return;
-      };
+      }
       if (err.name === 'ValidationError') {
         return next(new IncorrectData_400(mesErrValidationUser400));
       }

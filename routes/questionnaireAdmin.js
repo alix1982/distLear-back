@@ -4,8 +4,8 @@ const {
   validationRouterCreateQuestionnaireAdmin,
   validationRouterDeleteQuestionnaireAdmin,
   validationRouterFixQuestionnaireAdmin,
-  validationRouterFixModerationQuestionnaireAdmin
- } = require('../validations/validationRouter');
+  validationRouterFixModerationQuestionnaireAdmin,
+} = require('../validations/validationRouter');
 
 const {
   getQuestionnairesAdmin,
@@ -21,7 +21,11 @@ router.post('/questionnaire/admin', validationRouterCreateQuestionnaireAdmin, cr
 
 router.patch('/questionnaire/admin/:_id', validationRouterFixQuestionnaireAdmin, patchQuestionnaireAdmin);
 
-router.patch('/questionnaire/admin/moderation/:_id', validationRouterFixModerationQuestionnaireAdmin, patchQuestionnaireAdminModeration);
+router.patch(
+  '/questionnaire/admin/moderation/:_id',
+  validationRouterFixModerationQuestionnaireAdmin,
+  patchQuestionnaireAdminModeration
+);
 
 router.delete('/questionnaire/admin/:_id', validationRouterDeleteQuestionnaireAdmin, deleteQuestionnaireAdmin);
 
