@@ -25,9 +25,9 @@ const createQuestionnaire = (req, res, next) => {
     isModeration: false,
     consentProcessingPersonalData,
   })
-    .then((questionnaire) => {
-      res.send({...questionnaire, message: mesQuestion});
-    })
+    // .then((questionnaire) => {
+    //   res.send({...questionnaire, message: mesQuestion});
+    // })
     .catch((err) => {
       console.log(err);
 

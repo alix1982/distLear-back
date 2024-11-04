@@ -23,8 +23,10 @@ const sendEmail = async (options) => {
     html: options.html,
   };
 
+  console.log('отправляем...');
+  console.log(mailOptions)
   await transporter.sendMail(mailOptions);
-  // console.log('Email отправлен');
+  console.log('Email отправлен');
 };
 
 module.exports = sendEmail;

@@ -1,7 +1,7 @@
 const Questionnaire = require('../models/questionnaire');
 const IncorrectData_400 = require('../errors/400-incorrectData');
 
-const { mesErrNoEmailSending400, mesQuestion } = require('../utils/messageServer');
+const { mesErrNoEmailSending400, mesQuestion, mesErrEmailSending400, mesQuestionAndEmail, mesErrNoQuestion } = require('../utils/messageServer');
 
 const createQuestionnaire = require('../utils/createQuestionnaire');
 const sendEmail = require('../utils/sendEmail');
@@ -46,8 +46,18 @@ module.exports.createQuestionnaireUser = async (req, res, next) => {
 
     // отправляем данные на почту, если такого снилса нет в базе
     Questionnaire.find({ snils: snils })
-      .then((questionnaire)=>{
-        questionnaire.length === 0 && sendEmail(options);
+      .then(async (questionnaire)=>{
+        if (questionnaire.length === 0) {
+          try {
+            await sendEmail(options);
+            res.send({...questionnaire, message: mesQuestionAndEmail});
+            // res.send({ message: mesQuestion })
+          } catch (err) {
+            console.log(err);
+            res.send({...questionnaire, message: mesErrEmailSending400});
+            // next(new IncorrectData_400(mesErrEmailSending400));
+          }
+        }
       })
 
     // res.status(200).json({
@@ -78,10 +88,14 @@ module.exports.createQuestion = async (req, res, next) => {
         <p>Почта: ${email}</p>
         <p>Вопрос: ${question}</p>
       `,};
-
     // отправляем данные на почту
-    await sendEmail(options);
-    res.send({ message: mesQuestion })
+    try {
+      await sendEmail(options);
+      res.send({ message: mesQuestion })
+    } catch (err) {
+      console.log(err);
+      next(new IncorrectData_400(mesErrEmailSending400));
+    }
     // res.status(200).json({
     //   message: 'Check your mail!',
     // });
