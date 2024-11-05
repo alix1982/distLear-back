@@ -67,7 +67,7 @@ module.exports.createUser = (req, res, next) => {
       User.create({
         snils: snils,
         avatar: '',
-        name: translit(userQuestionnaire.firstName),
+        name: translit(userQuestionnaire.firstName).trim(),
         password: Math.floor(Math.random() * 100000),
         isHash: false,
         education: [],
