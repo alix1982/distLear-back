@@ -161,7 +161,7 @@ module.exports.validationRouterUpdateProgramm = celebrate({
   body: Joi.object().keys({
     thema: Joi.number().required().min(0).max(10),
     block: Joi.number().required().min(0).max(10),
-    keyChange: Joi.string().required().min(1).max(10),
+    keyChange: Joi.string().required().min(1).max(20),
   }),
 });
 
