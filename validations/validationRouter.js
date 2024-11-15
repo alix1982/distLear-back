@@ -5,7 +5,7 @@ const { mesErrCelebratePhone400 } = require('../utils/messageServer');
 // валидация роута авторизации
 module.exports.validationRouterLogin = celebrate({
   body: Joi.object().keys({
-    name: Joi.string().required().min(2).max(30),
+    name: Joi.string().required().min(2).max(50),
     password: Joi.string().required().min(1).max(20),
     snils: Joi.string().min(11).max(11),
   }),
@@ -15,10 +15,10 @@ module.exports.validationRouterLogin = celebrate({
 module.exports.validationRouterCreateQuestionnaireUser = celebrate({
   body: Joi.object().keys({
     emailRequst: Joi.string().email().required(),
-    firstName: Joi.string().required().min(2).max(30),
-    lastName: Joi.string().required().min(2).max(30),
-    patronymic: Joi.string().required().min(2).max(30),
-    workName: Joi.string().required().min(2).max(30),
+    firstName: Joi.string().required().min(2).max(50),
+    lastName: Joi.string().required().min(2).max(50),
+    patronymic: Joi.string().required().min(2).max(50),
+    workName: Joi.string().required().min(2).max(100),
     email: Joi.string().email().required(),
     phone: Joi.string()
       .required()
@@ -28,12 +28,12 @@ module.exports.validationRouterCreateQuestionnaireUser = celebrate({
         }
         return helpers.message(mesErrCelebratePhone400);
       }),
-    postWork: Joi.string().required().min(2).max(30),
-    postGoAndChs: Joi.string().required().min(2).max(30),
+    postWork: Joi.string().required().min(2).max(50),
+    postGoAndChs: Joi.string().required().min(2).max(50),
     yearPreviousQualification: Joi.number().required().min(1950).max(2100),
-    education: Joi.string().required().min(2).max(30),
+    education: Joi.string().required().min(2).max(50),
     snils: Joi.string().required().min(11).max(11),
-    citizenship: Joi.string().required().min(2).max(30),
+    citizenship: Joi.string().required().min(2).max(50),
     consentProcessingPersonalData: Joi.boolean().required().default(false),
   }),
 });
@@ -41,7 +41,7 @@ module.exports.validationRouterCreateQuestionnaireUser = celebrate({
 module.exports.validationRouterQuestion = celebrate({
   body: Joi.object().keys({
     emailRequst: Joi.string().email().required(),
-    name: Joi.string().required().min(2).max(30),
+    name: Joi.string().required().min(2).max(50),
     email: Joi.string().email().required(),
     phone: Joi.string()
       .required()
@@ -58,10 +58,10 @@ module.exports.validationRouterQuestion = celebrate({
 // валидация роутов анкет для администратора
 module.exports.validationRouterCreateQuestionnaireAdmin = celebrate({
   body: Joi.object().keys({
-    firstName: Joi.string().required().min(2).max(30),
-    lastName: Joi.string().required().min(2).max(30),
-    patronymic: Joi.string().required().min(2).max(30),
-    workName: Joi.string().required().min(2).max(30),
+    firstName: Joi.string().required().min(2).max(50),
+    lastName: Joi.string().required().min(2).max(50),
+    patronymic: Joi.string().required().min(2).max(50),
+    workName: Joi.string().required().min(2).max(100),
     email: Joi.string().email().required(),
     phone: Joi.string()
       .required()
@@ -71,12 +71,12 @@ module.exports.validationRouterCreateQuestionnaireAdmin = celebrate({
         }
         return helpers.message(mesErrCelebratePhone400);
       }),
-    postWork: Joi.string().required().min(2).max(30),
-    postGoAndChs: Joi.string().required().min(2).max(30),
+    postWork: Joi.string().required().min(2).max(50),
+    postGoAndChs: Joi.string().required().min(2).max(50),
     yearPreviousQualification: Joi.number().required().min(1950).max(2100),
-    education: Joi.string().required().min(2).max(30),
+    education: Joi.string().required().min(2).max(50),
     snils: Joi.string().required().min(11).max(11),
-    citizenship: Joi.string().required().min(2).max(30),
+    citizenship: Joi.string().required().min(2).max(50),
     // isModeration: Joi.boolean().required().default(false),
     consentProcessingPersonalData: Joi.boolean().required().default(false),
   }),
@@ -84,10 +84,10 @@ module.exports.validationRouterCreateQuestionnaireAdmin = celebrate({
 
 module.exports.validationRouterFixQuestionnaireAdmin = celebrate({
   body: Joi.object().keys({
-    firstName: Joi.string().min(2).max(30),
-    lastName: Joi.string().min(2).max(30),
-    patronymic: Joi.string().min(2).max(30),
-    workName: Joi.string().min(2).max(30),
+    firstName: Joi.string().min(2).max(50),
+    lastName: Joi.string().min(2).max(50),
+    patronymic: Joi.string().min(2).max(50),
+    workName: Joi.string().min(2).max(100),
     email: Joi.string().email(),
     phone: Joi.string().custom((values, helpers) => {
       if (validator.isMobilePhone(values)) {
@@ -95,12 +95,12 @@ module.exports.validationRouterFixQuestionnaireAdmin = celebrate({
       }
       return helpers.message(mesErrCelebratePhone400);
     }),
-    postWork: Joi.string().min(2).max(30),
-    postGoAndChs: Joi.string().min(2).max(30),
+    postWork: Joi.string().min(2).max(50),
+    postGoAndChs: Joi.string().min(2).max(50),
     yearPreviousQualification: Joi.number().min(1950).max(2100),
-    education: Joi.string().min(2).max(30),
+    education: Joi.string().min(2).max(50),
     snils: Joi.string().min(11).max(11),
-    citizenship: Joi.string().min(2).max(30),
+    citizenship: Joi.string().min(2).max(50),
   }),
   params: Joi.object().keys({
     _id: Joi.string().required().hex().length(24),

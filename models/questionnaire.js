@@ -6,25 +6,25 @@ const questionnaireSchema = new mongoose.Schema({
     type: String,
     required: true,
     minlength: 2,
-    maxlength: 30,
+    maxlength: 50,
   },
   lastName: {
     type: String,
     required: true,
     minlength: 2,
-    maxlength: 30,
+    maxlength: 50,
   },
   patronymic: {
     type: String,
     required: true,
     minlength: 2,
-    maxlength: 30,
+    maxlength: 50,
   },
   workName: {
     type: String,
     required: true,
     minlength: 2,
-    maxlength: 30,
+    maxlength: 100,
   },
   email: {
     type: String,
@@ -40,13 +40,13 @@ const questionnaireSchema = new mongoose.Schema({
     type: String,
     required: true,
     minlength: 2,
-    maxlength: 30,
+    maxlength: 50,
   },
   postGoAndChs: {
     type: String,
     required: true,
     minlength: 2,
-    maxlength: 30,
+    maxlength: 50,
   },
   yearPreviousQualification: {
     type: Number,
@@ -58,7 +58,7 @@ const questionnaireSchema = new mongoose.Schema({
     type: String,
     required: true,
     minlength: 2,
-    maxlength: 30,
+    maxlength: 50,
   },
   snils: {
     type: String,
@@ -71,7 +71,7 @@ const questionnaireSchema = new mongoose.Schema({
     type: String,
     required: true,
     minlength: 2,
-    maxlength: 30,
+    maxlength: 50,
   },
   isModeration: {
     type: Boolean,
