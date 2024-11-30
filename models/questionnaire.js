@@ -48,11 +48,18 @@ const questionnaireSchema = new mongoose.Schema({
     minlength: 2,
     maxlength: 50,
   },
+  // удалить после чистки базы
   yearPreviousQualification: {
     type: Number,
-    required: true,
+    // required: true,
     minlength: 4,
     maxlength: 4,
+  },
+  birthdate: {
+    type: Number,
+    required: true,
+    min: -631152000000,
+    max: 1293753600000,
   },
   education: {
     type: String,

@@ -18,6 +18,7 @@ module.exports = {
   // сообщения роута noAutorization и утилит
   mesErrNoEmailSending400: 'Нет почты для отправки анкеты',
   mesErrEmailSending400: 'Анкета создана. Ошибка отправки письма', // реквизитов отправителя
+  mesErrEmailSendingQuestion400: 'Ошибка отправки письма', // реквизитов отправителя
   mesQuestionAndEmail: 'Анкета создана, письмо отправлено',
   mesErrNoQuestion: 'Анкета не найдена',
   mesQuestion: 'Письмо отправлено', // + в утилитах
@@ -29,6 +30,7 @@ module.exports = {
   mesFixQuestionnaire: 'Анкета изменена',
   mesModerationQuestionnaireCompleted: 'Модерация анкеты пройдена',
   mesModerationQuestionnaireCancelled: 'Модерация анкеты отменена',
+  mesErrQuestionnaire404: 'Ошибка типа модели анкеты',
 
   //сообщения роута пользователя
   mesAddProgrammUserCompleted: 'Программы успешно добавлены',
