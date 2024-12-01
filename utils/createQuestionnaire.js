@@ -1,7 +1,7 @@
 const ConflictData_409 = require('../errors/409-conflictData');
 const IncorrectData_400 = require('../errors/400-incorrectData');
 const Questionnaire = require('../models/questionnaire');
-const { mesErrConflictQuestionnaire409, mesErrValidationQuestionnaire400, mesQuestion, mesErrEmailSending400, mesQuestionAndEmail, mesErrQuestionnaire404 } = require('./messageServer');
+const { mesErrConflictQuestionnaire409, mesErrValidationQuestionnaire400, mesQuestion, mesErrEmailSending400, mesQuestionAndEmail, mesErrQuestionnaire404, mesQuestionnaire } = require('./messageServer');
 const calcDate = require('./translationDate');
 const NoDate_404 = require('../errors/404-noDate');
 const sendEmail = require('./sendEmail');
@@ -49,7 +49,7 @@ const createQuestionnaire = (req, res, next, isEmail=false) => {
         isSend = true;
 
       isSend ?
-        res.send({questionnaire, message: mesQuestionAndEmail}) :
+        res.send({questionnaire, message: isEmail ? mesQuestionAndEmail : mesQuestionnaire}) :
         res.send({questionnaire, message: mesErrEmailSending400});
     })
     .catch((err) => {

@@ -20,6 +20,7 @@ module.exports = {
   mesErrEmailSending400: 'Анкета создана. Ошибка отправки письма', // реквизитов отправителя
   mesErrEmailSendingQuestion400: 'Ошибка отправки письма', // реквизитов отправителя
   mesQuestionAndEmail: 'Анкета создана, письмо отправлено',
+  mesQuestionnaire: 'Анкета создана',
   mesErrNoQuestion: 'Анкета не найдена',
   mesQuestion: 'Письмо отправлено', // + в утилитах
 
