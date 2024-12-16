@@ -195,6 +195,12 @@ module.exports.validationRouterCreateGroup = celebrate({
   }),
 });
 
+module.exports.validationRouterGroupUserData = celebrate({
+  params: Joi.object().keys({
+    _id: Joi.string().required().hex().length(24),
+  }),
+});
+
 module.exports.validationRouterDeleteGroup = celebrate({
   params: Joi.object().keys({
     _id: Joi.string().required().hex().length(24),

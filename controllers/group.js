@@ -4,6 +4,8 @@ const NotAcceptable_406 = require('../errors/406-notAcceptable');
 const ConflictData_409 = require('../errors/409-conflictData');
 const Programm = require('../models/programm');
 const Group = require('../models/group');
+const User = require('../models/user');
+const Questionnaire = require('../models/questionnaire');
 
 const {
   mesErrValidationGroup400,
@@ -15,7 +17,14 @@ const {
   mesErrConflictProgramm409,
   mesErrNoProgramm404,
   mesErrIdProgramm400,
+  mesErrNoUsers404,
+  mesErrNoUsersInGroup404,
+  mesErrNoQuestionnaire404,
+  mesErrIdQuestionnaire400,
+  mesErrValidationQuestionnaire400,
+  mesErrConflictQuestionnaire409,
 } = require('../utils/messageServer');
+const questionnaire = require('../models/questionnaire');
 
 module.exports.getGroups = (req, res, next) => {
   // поиск групп
@@ -61,6 +70,69 @@ module.exports.createGroup = (req, res, next) => {
         next(err);
       });
   });
+};
+
+module.exports.getGroupUserData = (req, res, next) => {
+  let usersSortSnils = [];
+  let questionnaireSortGroup = [];
+  User.find({})
+    .then((users) => {
+      if (users === null) {
+        throw new NoDate_404(mesErrNoUsers404);
+      }
+      users.map((user) =>
+        user.education.map(
+          (usEd) =>
+            String(usEd.group) === String(req.params._id) &&
+              (usersSortSnils = [...usersSortSnils, { snils: user.snils, test: usEd.programm.finallyTest.passed }])
+        )
+      );
+      if (usersSortSnils.length === 0) {
+        throw new NoDate_404(mesErrNoUsersInGroup404);
+      } else {
+        return usersSortSnils;
+      }
+    })
+    .then((usersSortSnils) => {
+      usersSortSnils.map((userSnils) => {
+        Questionnaire.find({ snils: userSnils.snils })
+          .then((questionnaireUser) => {
+            if (questionnaireUser === null) {
+              throw new NoDate_404(mesErrNoQuestionnaire404);
+            }
+            // console.log(questionnaireUser[0])
+            // Object.assign(target, source)
+            // const q = questionnaireUser[0]
+            // const qs = {...q, test: userSnils.test};
+            // const q = Object.assign(questionnaireUser[0], {test: userSnils.test})
+            // console.log(q)
+            // console.log(userSnils)
+
+            return (questionnaireSortGroup = [...questionnaireSortGroup, {questionnaire: questionnaireUser[0], test: userSnils.test}]);
+          })
+          .then((questionnaireSortGroup) => {
+            // console.log(questionnaireSortGroup);
+            if (questionnaireSortGroup.length === usersSortSnils.length) {
+              res.send(questionnaireSortGroup);
+            }
+          })
+          .catch((err) => {
+            console.log(err.name);
+            if (err.name === 'CastError') {
+              next(new IncorrectData_400(mesErrIdQuestionnaire400));
+              return;
+            }
+            if (err.name === 'ValidationError') {
+              return next(new IncorrectData_400(mesErrValidationQuestionnaire400));
+            }
+            if (err.code === 11000) {
+              return next(new ConflictData_409(mesErrConflictQuestionnaire409));
+            }
+            next(err);
+          });
+      });
+    })
+    .catch(next);
 };
 
 module.exports.deleteGroup = (req, res, next) => {
