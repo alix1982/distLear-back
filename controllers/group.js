@@ -73,18 +73,19 @@ module.exports.createGroup = (req, res, next) => {
 };
 
 module.exports.getGroupUserData = (req, res, next) => {
-  let usersSortSnils = [];
-  let questionnaireSortGroup = [];
+  let usersSortSnils = []; // массив со снилсами пользователей и статусом прохождения программы
+  let questionnaireSortGroup = []; // массив со анкетными данными пользователей и статусом прохождения программы
   User.find({})
     .then((users) => {
       if (users === null) {
         throw new NoDate_404(mesErrNoUsers404);
       }
+      // формирование массива со снилсами пользователей и статусом прохождения программы (по результатам итогового теста)
       users.map((user) =>
         user.education.map(
           (usEd) =>
             String(usEd.group) === String(req.params._id) &&
-              (usersSortSnils = [...usersSortSnils, { snils: user.snils, test: usEd.programm.finallyTest.passed }])
+            (usersSortSnils = [...usersSortSnils, { snils: user.snils, test: usEd.programm.finallyTest.passed }])
         )
       );
       if (usersSortSnils.length === 0) {
@@ -95,23 +96,18 @@ module.exports.getGroupUserData = (req, res, next) => {
     })
     .then((usersSortSnils) => {
       usersSortSnils.map((userSnils) => {
+        // поиск анкетных данных пользователей по снилсам для ответа на запрос
         Questionnaire.find({ snils: userSnils.snils })
           .then((questionnaireUser) => {
             if (questionnaireUser === null) {
               throw new NoDate_404(mesErrNoQuestionnaire404);
             }
-            // console.log(questionnaireUser[0])
-            // Object.assign(target, source)
-            // const q = questionnaireUser[0]
-            // const qs = {...q, test: userSnils.test};
-            // const q = Object.assign(questionnaireUser[0], {test: userSnils.test})
-            // console.log(q)
-            // console.log(userSnils)
-
-            return (questionnaireSortGroup = [...questionnaireSortGroup, {questionnaire: questionnaireUser[0], test: userSnils.test}]);
+            return (questionnaireSortGroup = [
+              ...questionnaireSortGroup,
+              { questionnaire: questionnaireUser[0], test: userSnils.test },
+            ]);
           })
           .then((questionnaireSortGroup) => {
-            // console.log(questionnaireSortGroup);
             if (questionnaireSortGroup.length === usersSortSnils.length) {
               res.send(questionnaireSortGroup);
             }
