@@ -47,13 +47,13 @@ module.exports.getDataMe = (req, res, next) => {
       user.education.map((item) => (groupsUser = [...groupsUser, String(item.group)]));
       // поиск групп по массиву id групп пользователя
       Group.find({ _id: { $in: groupsUser } })
-        // .then((groups) => {
-        //   const dataToday = Date.now();
-        //   const groupsFilter = groups.filter((group) => {
-        //     return group.dateStart <= dataToday && group.dateEnd >= dataToday;
-        //   });
-        //   return groupsFilter;
-        // })
+        .then((groups) => {
+          const dataToday = Date.now();
+          const groupsFilter = groups.filter((group) => {
+            return group.dateStart <= dataToday && group.dateEnd >= dataToday;
+          });
+          return groupsFilter;
+        })
         .then((groupsFilter) => {
           // поиск анкеты пользователя
           Questionnaire.find({ snils: user.snils })
@@ -118,12 +118,12 @@ module.exports.getUserGroup = async (req, res, next) => {
       // поиск групп по массиву id групп пользователя
       Group.find({ _id: { $in: groupsUser } })
         .then((groups) => {
-          // const dataToday = Date.now();
-          // const groupsFilter = groups.filter((group) => {
-          //   return group.dateStart <= dataToday && group.dateEnd >= dataToday;
-          // });
-          // res.send(groupsFilter);
-          res.send(groups)
+          const dataToday = Date.now();
+          const groupsFilter = groups.filter((group) => {
+            return group.dateStart <= dataToday && group.dateEnd >= dataToday;
+          });
+          res.send(groupsFilter);
+          // res.send(groups)
         })
         .catch((err) => {
           console.log(err.name);
