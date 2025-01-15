@@ -35,7 +35,7 @@ module.exports = {
 
   //сообщения роута пользователя
   mesAddProgrammUserCompleted: 'Программы успешно добавлены',
-  mesErrFixUpdateProgrammUser: 'Ошибка измения программы пользователя',
+  mesErrFixUpdateProgrammUser404: 'Ошибка измения программы пользователя',
   mesErrNoKeyFixProgrammUser400: 'Неизвестный ключ изменения программ пользователя',
   mesErrNoDataFixProgrammUser400: 'Некорректные данные для изменения программ пользователя',
 

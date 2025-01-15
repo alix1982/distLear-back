@@ -13,7 +13,7 @@ const {
   mesErrNoGroup404,
   mesErrNoKeyFixProgrammUser400,
   mesErrNoDataFixProgrammUser400,
-  mesErrFixUpdateProgrammUser,
+  mesErrFixUpdateProgrammUser404,
   mesErrIdQuestionnaire400,
   mesErrValidationQuestionnaire400,
   mesErrConflictQuestionnaire409,
@@ -279,7 +279,7 @@ module.exports.patchUserProgramm = (req, res, next) => {
       }
     })
     .then((userNew) => {
-      if (userNew.acknowledged === true) {
+      if (userNew.acknowledged === true && userNew.modifiedCount > 0) {
         // формирование ответа при положительном прохождении запроса
         User.findById(req.user._id).then((user) => {
           if (user === null) {
@@ -293,10 +293,12 @@ module.exports.patchUserProgramm = (req, res, next) => {
         });
       } else {
         // формирование ответа при отрицательном прохождении запроса
-        return res.send({
-          userNew: userNew,
-          message: mesErrFixUpdateProgrammUser,
-        });
+        throw new IncorrectData_400(mesErrFixUpdateProgrammUser404);
+        // return res.send({
+        //   userNew: userNew,
+        //   message: mesErrFixUpdateProgrammUser404,
+        //   userGroup: user.education[groupIndex],
+        // });
       }
     })
     .catch((err) => {
@@ -306,7 +308,7 @@ module.exports.patchUserProgramm = (req, res, next) => {
         return;
       }
       if (err.name === 'TypeError') {
-        next(new NoDate_404(mesErrFixUpdateProgrammUser));
+        next(new NoDate_404(mesErrFixUpdateProgrammUser404));
         return;
       }
       if (err.name === 'ValidationError') {
