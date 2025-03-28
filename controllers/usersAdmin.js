@@ -64,37 +64,55 @@ module.exports.createUser = (req, res, next) => {
       //     education: []
       //   }))
       // создание пользователя с открытым паролем
-      User.create({
-        snils: snils,
-        avatar: '',
-        name: translit(userQuestionnaire.firstName).trim(),
-        password: Math.floor(Math.random() * 100000),
-        isHash: false,
-        isBlocking:false,
-        education: [],
-      })
-        .then((user) => {
-          const userRes = {
-            snils: user.snils,
-            name: user.name,
-            password: user.password,
-            education: user.education,
+      User.find({})
+        .then((users)=>{
+          if (users.length === 0) {
+            throw new NoDate_404(mesErrNoUser404);
           };
-          res.send(userRes);
+          const newNameUser = translit(userQuestionnaire.firstName).split('-')[0].trim();
+          const usersFilter = users.filter((item)=> item.name.split('-')[0] === newNameUser);
+          let numberUser = 0;
+          usersFilter.forEach((item) => {
+            numberUser < Number(item.name.split('-')[1]) ?
+              numberUser = Number(item.name.split('-')[1]) :
+              numberUser = numberUser;
+          });
+          return (usersFilter.length === 0 ? newNameUser : newNameUser + '-' + (numberUser+1));
         })
-        .catch((err) => {
-          console.log(err);
+        .then((nameUser)=>{
+          User.create({
+            snils: snils,
+            avatar: '',
+            name: nameUser,
+            password: Math.floor(Math.random() * 100000),
+            isHash: false,
+            isBlocking:false,
+            education: [],
+          })
+            .then((user) => {
+              const userRes = {
+                snils: user.snils,
+                name: user.name,
+                password: user.password,
+                education: user.education,
+              };
+              res.send(userRes);
+            })
+            .catch((err) => {
+              console.log(err);
+    
+              if (err.name === 'ValidationError') {
+                next(new IncorrectData_400(mesErrValidationUser400));
+                return;
+              }
+              if (err.code === 11000) {
+                next(new ConflictData_409(mesErrConflictUser409));
+                return;
+              }
+              next(err);
+            });
 
-          if (err.name === 'ValidationError') {
-            next(new IncorrectData_400(mesErrValidationUser400));
-            return;
-          }
-          if (err.code === 11000) {
-            next(new ConflictData_409(mesErrConflictUser409));
-            return;
-          }
-          next(err);
-        });
+        })
     });
 };
 
