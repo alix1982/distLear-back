@@ -9,7 +9,8 @@ const sendEmail = require('./sendEmail');
 const createQuestionnaire = (req, res, next, isEmail=false) => {
 
   const {
-    emailRequst, firstName, lastName, patronymic, workName, email, phone, postWork, postGoAndChs, // yearPreviousQualification,
+    emailRequst, firstName, lastName, patronymic, workName, email, phone, postWork, postGo,
+    // postGoAndChs, yearPreviousQualification,
     birthdate, education, snils, citizenship, consentProcessingPersonalData,
   } = req.body;
 
@@ -27,7 +28,7 @@ const createQuestionnaire = (req, res, next, isEmail=false) => {
       <p>Почта: ${email}</p>
       <p>Телефон: ${phone}</p>
       <p>Должность: ${postWork}</p>
-      <p>Должность по ГОиЧС: ${postGoAndChs}</p>
+      <p>Должность по ГОиЧС: ${postGo[0]}</p>
       <p>Дата рождения: ${calcDate(birthdate)}</p>
       <p>Образование: ${education}</p>
       <p>СНИЛС: ${snils}</p>
@@ -37,7 +38,8 @@ const createQuestionnaire = (req, res, next, isEmail=false) => {
   };
 
   Questionnaire.create({
-    firstName, lastName, patronymic, workName, email, phone, postWork, postGoAndChs,
+    firstName, lastName, patronymic, workName, email, phone, postWork, postGo,
+    // postGoAndChs,
     // yearPreviousQualification,
     // birthdate: Math.floor(new Date('2023-01-01').getTime() / 1000),
     birthdate, education, snils, citizenship, isModeration: false, consentProcessingPersonalData,

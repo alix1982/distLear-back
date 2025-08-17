@@ -73,7 +73,8 @@ module.exports.validationRouterCreateQuestionnaireAdmin = celebrate({
         return helpers.message(mesErrCelebratePhone400);
       }),
     postWork: Joi.string().required().min(2).max(50),
-    postGoAndChs: Joi.string().required().min(2).max(50),
+    // postGoAndChs: Joi.string().min(2).max(50),
+    postGo: Joi.array().items(Joi.string().required().min(2).max(50)).min(1),
     // yearPreviousQualification: Joi.number().required().min(1950).max(2100),
     // birthdate: Joi.date().required().timestamp('unix'),
     birthdate: Joi.date().required().timestamp('unix').min('1950-01-01').max('2010-12-31'),
@@ -99,7 +100,8 @@ module.exports.validationRouterFixQuestionnaireAdmin = celebrate({
       return helpers.message(mesErrCelebratePhone400);
     }),
     postWork: Joi.string().min(2).max(50),
-    postGoAndChs: Joi.string().min(2).max(50),
+    // postGoAndChs: Joi.string().min(2).max(50),
+    postGo: Joi.array().items(Joi.string().required().min(2).max(50)).min(1),
     // yearPreviousQualification: Joi.number().min(1950).max(2100),
     birthdate: Joi.date().timestamp('unix'),
     // birthdate: Joi.date().timestamp('unix').min('1950-01-01').max('2010-12-31'),

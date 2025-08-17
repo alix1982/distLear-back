@@ -42,9 +42,16 @@ const questionnaireSchema = new mongoose.Schema({
     minlength: 2,
     maxlength: 50,
   },
+  postGo: [{
+    type: String,
+    // required: true,
+    minlength: 2,
+    maxlength: 50,
+  }],
+  // удалить после чистки базы
   postGoAndChs: {
     type: String,
-    required: true,
+    // required: true,
     minlength: 2,
     maxlength: 50,
   },

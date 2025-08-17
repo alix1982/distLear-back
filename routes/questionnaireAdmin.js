@@ -13,6 +13,7 @@ const {
   patchQuestionnaireAdmin,
   patchQuestionnaireAdminModeration,
   deleteQuestionnaireAdmin,
+  patchQuestionnairesAdminPostGo,
 } = require('../controllers/questionnaireAdmin');
 
 router.get('/questionnaire/admin', getQuestionnairesAdmin);
@@ -28,5 +29,9 @@ router.patch(
 );
 
 router.delete('/questionnaire/admin/:_id', validationRouterDeleteQuestionnaireAdmin, deleteQuestionnaireAdmin);
+
+// технический метод для добавление массива postGo на базе строкового postGoAndChs
+// закомментировать на прод контроллер и роут
+router.patch( '/questionnaire/admin/postGo/:_id', patchQuestionnairesAdminPostGo );
 
 module.exports = router;
