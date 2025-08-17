@@ -148,29 +148,29 @@ module.exports.deleteQuestionnaireAdmin = (req, res, next) => {
 
 // технический метод для добавление массива postGo на базе строкового postGoAndChs
 // закомментировать на прод контроллер и роут
-module.exports.patchQuestionnairesAdminPostGo = (req, res, next) => {
-  Questionnaire.find({})
-    .then((questionnaires) => {
-      if (questionnaires.length === 0) {
-        throw new NoDate_404(mesErrNoQuestionnaire404);
-      }
-      questionnaires.forEach((questionnaire) => {
-        const postGo = [questionnaire.postGoAndChs];
-        Questionnaire.findByIdAndUpdate(questionnaire._id, { postGo: postGo }, { new: true, runValidators: true })
-          .then((res) =>{
-            if (res === null) {
-              throw new NoDate_404(mesErrNoProgramm404);
-            }
-            console.log(res)
-          })
-        // console.log(postGo)
-        // questionnaire.updateOne({ $set: { postGo: postGo } }, { new: true, runValidators: true })
-        //   .then((res))
-        //     if (res.acknowledged === true) {console.log(res)}
+// module.exports.patchQuestionnairesAdminPostGo = (req, res, next) => {
+//   Questionnaire.find({})
+//     .then((questionnaires) => {
+//       if (questionnaires.length === 0) {
+//         throw new NoDate_404(mesErrNoQuestionnaire404);
+//       }
+//       questionnaires.forEach((questionnaire) => {
+//         const postGo = [questionnaire.postGoAndChs];
+//         Questionnaire.findByIdAndUpdate(questionnaire._id, { postGo: postGo }, { new: true, runValidators: true })
+//           .then((res) =>{
+//             if (res === null) {
+//               throw new NoDate_404(mesErrNoProgramm404);
+//             }
+//             console.log(res)
+//           })
+//         // console.log(postGo)
+//         // questionnaire.updateOne({ $set: { postGo: postGo } }, { new: true, runValidators: true })
+//         //   .then((res))
+//         //     if (res.acknowledged === true) {console.log(res)}
 
-      }
-      )
-      res.send('ok');
-    })
-    .catch(next);
-};
+//       }
+//       )
+//       res.send('ok');
+//     })
+//     .catch(next);
+// };

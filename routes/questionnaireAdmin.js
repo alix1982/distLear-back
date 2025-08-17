@@ -32,6 +32,6 @@ router.delete('/questionnaire/admin/:_id', validationRouterDeleteQuestionnaireAd
 
 // технический метод для добавление массива postGo на базе строкового postGoAndChs
 // закомментировать на прод контроллер и роут
-router.patch( '/questionnaire/admin/postGo/:_id', patchQuestionnairesAdminPostGo );
+// router.patch( '/questionnaire/admin/postGo/:_id', patchQuestionnairesAdminPostGo );
 
 module.exports = router;
