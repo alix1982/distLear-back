@@ -35,7 +35,11 @@ module.exports.validationRouterCreateQuestionnaireUser = celebrate({
     education: Joi.string().required().min(2).max(50),
     snils: Joi.string().required().min(11).max(11),
     citizenship: Joi.string().required().min(2).max(50),
+    passportNumber: Joi.string().required().min(10).max(15),
+    passportDate: Joi.date().required().timestamp('unix').min('1950-01-01').max('2030-12-31'),
+    passportIssued: Joi.string().required().min(2).max(100),
     consentProcessingPersonalData: Joi.boolean().required().default(false),
+    consentTransferPersonalData: Joi.boolean().required().default(false),
   }),
 });
 
@@ -81,8 +85,12 @@ module.exports.validationRouterCreateQuestionnaireAdmin = celebrate({
     education: Joi.string().required().min(2).max(50),
     snils: Joi.string().required().min(11).max(11),
     citizenship: Joi.string().required().min(2).max(50),
+    passportNumber: Joi.string().required().min(10).max(15),
+    passportDate: Joi.date().required().timestamp('unix').min('1950-01-01').max('2030-12-31'),
+    passportIssued: Joi.string().required().min(2).max(100),
     // isModeration: Joi.boolean().required().default(false),
     consentProcessingPersonalData: Joi.boolean().required().default(false),
+    consentTransferPersonalData: Joi.boolean().required().default(false),
   }),
 });
 
@@ -103,11 +111,14 @@ module.exports.validationRouterFixQuestionnaireAdmin = celebrate({
     // postGoAndChs: Joi.string().min(2).max(50),
     postGo: Joi.array().items(Joi.string().required().min(2).max(50)).min(1),
     // yearPreviousQualification: Joi.number().min(1950).max(2100),
-    birthdate: Joi.date().timestamp('unix'),
+    birthdate: Joi.date().timestamp('unix').min('1950-01-01').max('2010-12-31'),
     // birthdate: Joi.date().timestamp('unix').min('1950-01-01').max('2010-12-31'),
     education: Joi.string().min(2).max(50),
     snils: Joi.string().min(11).max(11),
     citizenship: Joi.string().min(2).max(50),
+    passportNumber: Joi.string().required().min(10).max(15),
+    passportDate: Joi.date().required().timestamp('unix').min('1950-01-01').max('2030-12-31'),
+    passportIssued: Joi.string().required().min(2).max(100),
   }),
   params: Joi.object().keys({
     _id: Joi.string().required().hex().length(24),

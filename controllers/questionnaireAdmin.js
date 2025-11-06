@@ -43,6 +43,9 @@ module.exports.patchQuestionnaireAdmin = (req, res, next) => {
     education,
     snils,
     citizenship,
+    passportNumber,
+    passportDate,
+    passportIssued,
   } = req.body;
   Questionnaire.findById(req.params._id)
     .then((questionnaire) => {
@@ -65,6 +68,9 @@ module.exports.patchQuestionnaireAdmin = (req, res, next) => {
             education: education,
             snils: snils,
             citizenship: citizenship,
+            passportNumber: passportNumber,
+            passportDate: passportDate,
+            passportIssued: passportIssued,
           },
         },
         { new: true, runValidators: true }

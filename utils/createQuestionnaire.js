@@ -11,7 +11,8 @@ const createQuestionnaire = (req, res, next, isEmail=false) => {
   const {
     emailRequst, firstName, lastName, patronymic, workName, email, phone, postWork, postGo,
     // postGoAndChs, yearPreviousQualification,
-    birthdate, education, snils, citizenship, consentProcessingPersonalData,
+    birthdate, education, snils, citizenship, passportNumber, passportDate, passportIssued,
+    consentProcessingPersonalData, consentTransferPersonalData,
   } = req.body;
 
   let isSend = false;
@@ -33,7 +34,11 @@ const createQuestionnaire = (req, res, next, isEmail=false) => {
       <p>Образование: ${education}</p>
       <p>СНИЛС: ${snils}</p>
       <p>Гражданство: ${citizenship}</p>
+      <p>Паспорт (серия, номер): ${passportNumber}</p>
+      <p>Паспорт (дата выдачи): ${passportDate}</p>
+      <p>Паспорт (выдан): ${passportIssued}</p>
       <p>Согласие на обработку персональных данных: ${consentProcessingPersonalData ? 'Есть' : 'Нет'}</p>
+      <p>Согласие на передачу персональных данных: ${consentTransferPersonalData ? 'Есть' : 'Нет'}</p>
       `,
   };
 
@@ -42,7 +47,8 @@ const createQuestionnaire = (req, res, next, isEmail=false) => {
     // postGoAndChs,
     // yearPreviousQualification,
     // birthdate: Math.floor(new Date('2023-01-01').getTime() / 1000),
-    birthdate, education, snils, citizenship, isModeration: false, consentProcessingPersonalData,
+    birthdate, education, snils, citizenship, isModeration: false, passportNumber, passportDate, passportIssued,
+    consentProcessingPersonalData, consentTransferPersonalData,
   })
     .then(async (questionnaire) => {
 

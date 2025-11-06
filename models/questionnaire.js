@@ -87,11 +87,34 @@ const questionnaireSchema = new mongoose.Schema({
     minlength: 2,
     maxlength: 50,
   },
+  passportNumber: {
+    type: String,
+    required: true,
+    minlength: 10,
+    maxlength: 15,
+    unique: true,
+  },
+  passportDate: {
+    type: Number,
+    required: true,
+    min: -631152000000,
+    max: 1924942306000,
+  },
+  passportIssued: {
+    type: String,
+    required: true,
+    minlength: 2,
+    maxlength: 100,
+  },
   isModeration: {
     type: Boolean,
     required: true,
   },
   consentProcessingPersonalData: {
+    type: Boolean,
+    required: true,
+  },
+  consentTransferPersonalData: {
     type: Boolean,
     required: true,
   },
