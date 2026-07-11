@@ -8,6 +8,8 @@ const userRouterAdmin = require('./usersAdmin');
 const questionnaireRouterAdmin = require('./questionnaireAdmin');
 const programmRouterAdmin = require('./programm');
 const groupRouterAdmin = require('./group');
+const translation = require('./translation');
+const feedback = require('./feedback');
 
 const errorRouter = require('./errors');
 const auth = require('../middlewares/auth');
@@ -16,6 +18,8 @@ const cors = require('../middlewares/cors');
 router.use(cors);
 
 router.use(noAutorizationRouter);
+router.use(translation);
+router.use(feedback);
 router.use(authRouter);
 router.use(auth);
 router.use(userRouter);
