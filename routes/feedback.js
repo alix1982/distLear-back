@@ -6,14 +6,21 @@ const router = require('express').Router();
 //   validationRouterGroupUserData,
 // } = require('../validations/validationRouter');
 
-const { createFeedback } = require('../controllers/feedback');
+const {
+  createFeedback,
+  getFeedbacksAdmin,
+  patchFeedbackAdmin,
+  deleteFeedbackAdmin
+} = require('../controllers/feedback');
 
-// router.get('/feedback', getGroups);
+router.get('/feedback', getFeedbacksAdmin);
 
 // router.get('/group/:_id', validationRouterGroupUserData, getGroupUserData);
 
 router.post('/feedback', createFeedback);
 
-// router.delete('/group/:_id', deleteGroup);
+router.patch('/feedback/:id', patchFeedbackAdmin);
+
+router.delete('/feedback/:id', deleteFeedbackAdmin);
 
 module.exports = router;

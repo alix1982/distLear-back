@@ -11,7 +11,7 @@ const feedbackSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'user',
     required: false,
-    default: null
+    default: null,
   },
   date: {
     type: Number,
@@ -23,6 +23,11 @@ const feedbackSchema = new mongoose.Schema({
     maxlength: 1000,
     required: true,
   },
+  isMainPage: {
+    type: Boolean,
+    required: true,
+    default: false,
+  }
 });
 
 module.exports = mongoose.model('feedback', feedbackSchema);
